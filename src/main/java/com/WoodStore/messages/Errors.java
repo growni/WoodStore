@@ -3,6 +3,9 @@ package com.WoodStore.messages;
 public enum Errors {
     ;
     public static final String PRODUCT_NOT_FOUND_ERROR = "Product with id %d not found.";
+    public static final String CHEAPER_PRODUCTS_NOT_FOUND_ERROR = "There are no products with price less than %.2f.";
+    public static final String EXPENSIVE_PRODUCTS_NOT_FOUND_ERROR = "There are no products with price greater than %.2f.";
+    public static final String AVAILABLE_PRODUCTS_NOT_FOUND_ERROR = "There are no available products at this time.";
     public static final String PRODUCT_NAME_LENGTH_ERROR = "Product name must be between 1 and 255 symbols long.";
     public static final String PRODUCT_NAME_ALREADY_EXISTS = "Product with that name already exists.";
     public static final String PRODUCT_DESCRIPTION_LENGTH_ERROR = "Product description can't be more than 1000 symbols long.";

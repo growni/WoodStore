@@ -39,44 +39,74 @@ public class ProductController {
         this.productService.deleteProductById(id);
     }
 
-    @GetMapping("/search")
-    public List<Product> findProductsByName(@RequestParam String name) {
+    @GetMapping("/filter/name")
+    public List<Product> filterProductsByName(@RequestParam String name) {
         return this.productService.findProductsByName(name);
     }
 
-    @PatchMapping("/name")
+    @GetMapping("/filter/price/lower")
+    public List<Product> filterLowerPriceProducts(@RequestParam Double price) {
+        return this.productService.findProductsCheaperThan(price);
+    }
+
+    @GetMapping("/filter/price/greater")
+    public List<Product> filterGreaterPriceProducts(@RequestParam Double price) {
+        return this.productService.findProductsMoreExpensiveThan(price);
+    }
+
+    @GetMapping("/filter/available")
+    public List<Product> filterAvailableProducts() {
+        return this.productService.findAvailableProducts();
+    }
+
+    @PatchMapping("/update/name")
     public void updateProductName(@RequestBody Product product) {
         this.productService.updateName(product.getId(), product.getName());
     }
 
-    @PatchMapping("/description")
+    @PatchMapping("/update/description")
     public void updateProductDescription(@RequestBody Product product) {
         this.productService.updateDescription(product.getId(), product.getDescription());
     }
 
-    @PatchMapping("/price")
+    @PatchMapping("/update/price")
     public void updateProductPrice(@RequestBody Product product) {
         this.productService.updatePrice(product.getId(), product.getPrice());
     }
 
-    @PatchMapping("/quantity")
+    @PatchMapping("/update/quantity")
     public void updateAvailableQuantity(@RequestBody Product product) {
         this.productService.updateAvailableQuantity(product.getId(), product.getQuantity());
     }
 
-    @PatchMapping("/width")
+    @PatchMapping("/update/width")
     public void updateProductWidth(@RequestBody Product product) {
         this.productService.updateWidth(product.getId(), product.getWidth());
     }
 
-    @PatchMapping("/height")
+    @PatchMapping("/update/height")
     public void updateProductHeight(@RequestBody Product product) {
         this.productService.updateWidth(product.getId(), product.getHeight());
     }
 
-    @PatchMapping("/weight")
+    @PatchMapping("/update/weight")
     public void updateProductWeight(@RequestBody Product product) {
         this.productService.updateWidth(product.getId(), product.getWeight());
+    }
+
+    @GetMapping("/sort/price/asc")
+    public List<Product> sortByPriceAsc() {
+        return this.productService.sortByPriceAsc();
+    }
+
+    @GetMapping("/sort/price/desc")
+    public List<Product> sortByPriceDesc() {
+        return this.productService.sortByPriceDesc();
+    }
+
+    @GetMapping("/sort/favorites")
+    public List<Product> sortByFavorites() {
+        return this.productService.sortByFavorites();
     }
 
     @PatchMapping("/subscribe")
@@ -88,5 +118,7 @@ public class ProductController {
     public void unsubscribeForProduct(@RequestBody SubscribeRequest request) {
         this.productService.removeEmail(request.getProductId(), request.getEmail());
     }
+
+
 
 }

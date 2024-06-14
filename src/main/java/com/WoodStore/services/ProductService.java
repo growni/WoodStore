@@ -9,8 +9,14 @@ public interface ProductService {
     Product addProduct(Product product);
     List<Product> getAllProducts();
     Product getProductById(Long productId) throws ProductNotFound;
-    void deleteProductById(Long productId);
+    List<Product> findProductsCheaperThan(Double price) throws ProductNotFound;
+    List<Product> findProductsMoreExpensiveThan(Double price) throws ProductNotFound;
+    List<Product> findAvailableProducts();
     List<Product> findProductsByName(String name);
+    List<Product> sortByPriceAsc();
+    List<Product> sortByPriceDesc();
+    List<Product> sortByFavorites();
+    void deleteProductById(Long productId);
     void updateDescription(Long productId, String description);
     void updateName(Long productId, String name);
     void updatePrice(Long productId, Double price);

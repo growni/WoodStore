@@ -7,9 +7,12 @@ import com.WoodStore.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.WoodStore.constants.Constants.*;
 import static com.WoodStore.messages.Errors.*;
@@ -43,6 +46,39 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> findProductsCheaperThan(Double price) {
+        List<Product> products = this.productRepository.findAllByPriceLessThan(price);
+
+        if(products.size() == 0) {
+            throw new ProductNotFound(String.format(CHEAPER_PRODUCTS_NOT_FOUND_ERROR, price));
+        }
+
+        return products;
+    }
+
+    @Override
+    public List<Product> findProductsMoreExpensiveThan(Double price) {
+        List<Product> products = this.productRepository.findAllByPriceGreaterThan(price);
+
+        if(products.size() == 0) {
+            throw new ProductNotFound(String.format(EXPENSIVE_PRODUCTS_NOT_FOUND_ERROR, price));
+        }
+
+        return products;
+    }
+
+    @Override
+    public List<Product> findAvailableProducts() {
+        List<Product> products = this.productRepository.findAvailableProducts();
+
+        if(products.size() == 0) {
+            throw new ProductNotFound(AVAILABLE_PRODUCTS_NOT_FOUND_ERROR);
+        }
+
+        return products;
+    }
+
+    @Override
     public void deleteProductById(Long productId) {
         this.productRepository.deleteById(productId);
     }
@@ -50,6 +86,39 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findProductsByName(String productName) {
         return this.productRepository.findProductsByName(productName);
+    }
+
+    @Override
+    public List<Product> sortByPriceAsc() {
+        List<Product> products = this.productRepository.sortByPriceAsc();
+
+        if(products.isEmpty()) {
+            return null;
+        }
+
+        return products;
+    }
+
+    @Override
+    public List<Product> sortByPriceDesc() {
+        List<Product> products = this.productRepository.sortByPriceDesc();
+
+        if(products.isEmpty()) {
+            return null;
+        }
+
+        return products;
+    }
+
+    @Override
+    public List<Product> sortByFavorites() {
+        List<Product> products = this.productRepository.findAllSubscribedProducts();
+
+        if(products.isEmpty()) {
+            return null;
+        }
+
+        return products.stream().sorted((a, b) -> b.getEmails().size() - a.getEmails().size()).collect(Collectors.toList());
     }
 
     @Override
@@ -97,7 +166,7 @@ public class ProductServiceImpl implements ProductService {
         validateHeight(height);
 
         Product product = getProductById(productId);
-        product.setWidth(height);
+        product.setHeight(height);
 
         this.productRepository.save(product);
     }
@@ -107,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
         validateWeight(weight);
 
         Product product = getProductById(productId);
-        product.setWidth(weight);
+        product.setWeight(weight);
 
         this.productRepository.save(product);
     }

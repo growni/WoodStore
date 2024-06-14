@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ public class Product {
     private Integer weight;
     private Integer quantity;
     @Convert(converter = SetToStringConverter.class)
+    @Column(name = "emails", length = 2048)
     private Set<String> emails;
 
 
@@ -55,4 +57,5 @@ public class Product {
                 String.format("Available quantity: %d", quantity);
 
     }
+
 }
