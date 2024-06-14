@@ -11,3 +11,5 @@ To run the backend part of the project locally follow the guidlines:
        - spring.datasource.password - your password for MySQL
        - server.port - check if the predefined port is available on your machine
 3. (Optional) Navigate to the Runner class and uncomment "addEntities()" in the run method to add example entities in the database.
+
+For setting up the frontend, follow the documentation on https://github.com/martin0626/Wood_shop_project
