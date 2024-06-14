@@ -21,10 +21,6 @@ public class Runner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 //        addEntities();
-//        this.productService.addEmail(1L, "aleksandar@gmail.com");
-//        this.productService.addEmail(1L, "sa60@gmail.com");
-//        this.productService.removeEmail(1L, "aleksandar@gmail.com");
-
     }
 
     public void addEntities() {
