@@ -1,29 +1,37 @@
 package com.WoodStore;
 
 import com.WoodStore.entities.Product;
-import com.WoodStore.repositories.ProductRepository;
+import com.WoodStore.services.OrderService;
 import com.WoodStore.services.ProductService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 @Component
 public class Runner implements ApplicationRunner {
     private final ProductService productService;
-    private final ProductRepository productRepository;
 
-    public Runner(ProductService productService, ProductRepository productRepository) {
+    private final OrderService orderService;
+
+    public Runner(ProductService productService, OrderService orderService) {
         this.productService = productService;
-        this.productRepository = productRepository;
+        this.orderService = orderService;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 //        addEntities();
+
+//        Product p1 = this.productService.getProductById(3L);
+//        Product p2 = this.productService.getProductById(1L);
+//
+//        this.orderService.createOrder(Set.of(p1, p2));
+//        this.orderService.placeOrder(1L);
+
+        this.productService.addImage(1L, "http://example.com/image1.png");
     }
 
     public void addEntities() {

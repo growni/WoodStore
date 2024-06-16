@@ -1,14 +1,15 @@
 package com.WoodStore.entities;
 
 import com.WoodStore.constants.OrderStatus;
+import com.WoodStore.entities.dtos.OrderProduct;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -27,18 +28,13 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
-
-    @ManyToMany
-    @JoinTable(
-            name = "order_product",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<Product> products;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<OrderProduct> orderProducts;
 
     public Order() {
-        this.products = new HashSet<>();
+        this.orderProducts = new HashSet<>();
         this.orderDate = LocalDate.now();
         this.status = OrderStatus.PROCESSING;
     }
+
 }

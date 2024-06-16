@@ -183,6 +183,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateAvailableQuantity(Long productId, Integer quantity) {
+
+        if(quantity < 0) {
+            quantity = 0;
+        }
+
         validateQuantity(quantity);
 
         Product product = getProductById(productId);
@@ -218,6 +223,40 @@ public class ProductServiceImpl implements ProductService {
         product.setEmails(emails);
 
         this.productRepository.save(product);
+    }
+
+    @Override
+    public void addImage(Long productId, String imgUrl) {
+        validateImageUrl(imgUrl);
+
+        Product product = getProductById(productId);
+        product.getAdditionalImgUrls().add(imgUrl);
+
+        this.productRepository.save(product);
+    }
+
+    @Override
+    public void updateImgUrl(Long productId, String imgUrl) {
+        validateImageUrl(imgUrl);
+
+        Product product = getProductById(productId);
+        product.setImageUrl(imgUrl);
+
+        this.productRepository.save(product);
+    }
+
+    @Override
+    public boolean removeImgUrl(Long productId, String imgUrl) {
+        Product product = getProductById(productId);
+
+        if(!product.getAdditionalImgUrls().contains(imgUrl)) {
+            return false;
+        }
+
+        product.getAdditionalImgUrls().remove(imgUrl);
+
+        this.productRepository.save(product);
+        return true;
     }
 
     private void validateEmail(String email) {
@@ -275,6 +314,15 @@ public class ProductServiceImpl implements ProductService {
     private void validateQuantity(Integer quantity) {
         if(quantity == null || quantity < PRODUCT_QUANTITY_MIN || quantity > PRODUCT_QUANTITY_MAX) {
             throw new ProductPropertyError(PRODUCT_QUANTITY_ERROR);
+        }
+    }
+
+    private void validateImageUrl(String url) {
+        String emailRegexPattern = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
+        boolean isValidUrl = Pattern.compile(emailRegexPattern).matcher(url).matches();
+
+        if(!isValidUrl) {
+            throw new ProductPropertyError(INVALID_IMAGE_URL);
         }
     }
 

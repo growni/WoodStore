@@ -8,10 +8,12 @@ import com.WoodStore.repositories.ProductRepository;
 import com.WoodStore.services.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.xml.validation.Validator;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -663,6 +665,63 @@ public class ProductTests {
 
         verify(productRepository, times(1)).findById(productId);
         verify(productRepository, never()).save(any(Product.class));
+    }
+
+    @Test
+    public void testAddImage() {
+        Long productId = 1L;
+        String imgUrl = "http://example.com/image.jpg";
+        Product product = new Product();
+        product.setId(productId);
+        product.setAdditionalImgUrls(new HashSet<>());
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        productService.addImage(productId, imgUrl);
+
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepository, times(1)).save(productArgumentCaptor.capture());
+        Product savedProduct = productArgumentCaptor.getValue();
+
+        assertTrue(savedProduct.getAdditionalImgUrls().contains(imgUrl));
+    }
+
+    @Test
+    public void testUpdateImgUrl() {
+        Long productId = 1L;
+        String imgUrl = "http://example.com/newimage.jpg";
+        Product product = new Product();
+        product.setId(productId);
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        productService.updateImgUrl(productId, imgUrl);
+
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepository, times(1)).save(productArgumentCaptor.capture());
+        Product savedProduct = productArgumentCaptor.getValue();
+
+        assertEquals(imgUrl, savedProduct.getImageUrl());
+    }
+
+    @Test
+    public void testAddImage_ProductNotFound() {
+        Long productId = 1L;
+        String imgUrl = "http://example.com/image.jpg";
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFound.class, () -> productService.addImage(productId, imgUrl));
+    }
+
+    @Test
+    public void testUpdateImgUrl_ProductNotFound() {
+        Long productId = 1L;
+        String imgUrl = "http://example.com/newimage.jpg";
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFound.class, () -> productService.updateImgUrl(productId, imgUrl));
     }
 
 

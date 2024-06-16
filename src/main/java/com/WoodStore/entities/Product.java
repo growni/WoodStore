@@ -1,5 +1,6 @@
 package com.WoodStore.entities;
 
+import com.WoodStore.entities.dtos.OrderProduct;
 import com.WoodStore.utils.SetToStringConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -27,13 +29,23 @@ public class Product {
     private Integer height;
     private Integer weight;
     private Integer quantity;
+    private String imageUrl;
+
+    @Convert(converter = SetToStringConverter.class)
+    @Column(name = "additional_images")
+    private Set<String> additionalImgUrls;
+
     @Convert(converter = SetToStringConverter.class)
     @Column(name = "emails", length = 2048)
     private Set<String> emails;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<OrderProduct> orderProducts = new HashSet<>();
+
 
     public Product() {
         this.emails = new HashSet<>();
+        this.additionalImgUrls = new HashSet<>();
     }
 
     @PrePersist

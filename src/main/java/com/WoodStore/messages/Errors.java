@@ -17,4 +17,6 @@ public enum Errors {
     public static final String PRODUCT_DUPLICATE_ERROR = "A product with the same name and properties already exists in the database.";
     public static final String INVALID_EMAIL_ERROR = "The email is not valid.";
     public static final String EMAIL_NOT_SUBSCRIBED = "The email is not subscribed for this product.";
+    public static final String ORDER_NOT_FOUND_ERROR = "order with id %d not found.";
+    public static final String INVALID_IMAGE_URL = "The image url is not valid.";
 }

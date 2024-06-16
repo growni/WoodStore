@@ -94,6 +94,21 @@ public class ProductController {
         this.productService.updateWidth(product.getId(), product.getWeight());
     }
 
+    @PatchMapping("/update/image")
+    public void updateImgUrl(@RequestBody Product product) {
+        this.productService.updateImgUrl(product.getId(), product.getImageUrl());
+    }
+
+    @PatchMapping("/update/image/add")
+    public void addImage(@RequestBody Product product) {
+        this.productService.addImage(product.getId(), product.getImageUrl());
+    }
+
+    @DeleteMapping("/update/image/remove")
+    public boolean removeImage(@RequestBody Product product) {
+        return this.productService.removeImgUrl(product.getId(), product.getImageUrl());
+    }
+
     @GetMapping("/sort/price/asc")
     public List<Product> sortByPriceAsc() {
         return this.productService.sortByPriceAsc();

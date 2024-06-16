@@ -26,4 +26,7 @@ public interface ProductService {
     void updateAvailableQuantity(Long productId, Integer quantity);
     void addEmail(Long productId, String email);
     void removeEmail(Long productId, String email);
+    void addImage(Long productId, String imgUrl);
+    void updateImgUrl(Long productId, String imgUrl);
+    boolean removeImgUrl(Long productId, String imgUrl);
 }
