@@ -119,6 +119,4 @@ public class ProductController {
         this.productService.removeEmail(request.getProductId(), request.getEmail());
     }
 
-
-
 }

@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> sortByPriceAsc() {
         List<Product> products = this.productRepository.sortByPriceAsc();
 
-        if(products.isEmpty()) {
+        if(products == null || products.isEmpty()) {
             return null;
         }
 
@@ -103,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> sortByPriceDesc() {
         List<Product> products = this.productRepository.sortByPriceDesc();
 
-        if(products.isEmpty()) {
+        if(products == null || products.isEmpty()) {
             return null;
         }
 
@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> sortByFavorites() {
         List<Product> products = this.productRepository.findAllSubscribedProducts();
 
-        if(products.isEmpty()) {
+        if(products == null || products.isEmpty()) {
             return null;
         }
 
