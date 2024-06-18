@@ -1,9 +1,8 @@
 package com.WoodStore.entities;
 
 import com.WoodStore.constants.OrderStatus;
-import com.WoodStore.entities.dtos.OrderProduct;
+import com.WoodStore.entities.dtos.ProductDto;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,11 +27,18 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<OrderProduct> orderProducts;
+    @Column(name = "total_price")
+    private Double totalPrice;
+
+    @Column(name = "recipient_email")
+    private String recipientEmail;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "basket_id", referencedColumnName = "id")
+    private Basket basket;
+
 
     public Order() {
-        this.orderProducts = new HashSet<>();
         this.orderDate = LocalDate.now();
         this.status = OrderStatus.PROCESSING;
     }

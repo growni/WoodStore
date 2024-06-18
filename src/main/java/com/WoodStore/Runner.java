@@ -1,5 +1,7 @@
 package com.WoodStore;
 
+import com.WoodStore.constants.OrderStatus;
+import com.WoodStore.entities.Order;
 import com.WoodStore.entities.Product;
 import com.WoodStore.services.OrderService;
 import com.WoodStore.services.ProductService;
@@ -23,13 +25,15 @@ public class Runner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        addEntities();
+        addEntities();
 
 //        Product p1 = this.productService.getProductById(3L);
 //        Product p2 = this.productService.getProductById(1L);
 //
-//        this.orderService.createOrder(Set.of(p1, p2));
-//        this.orderService.placeOrder(1L);
+//        Order order = new Order();
+//        order.setTotalPrice(600.00);
+//        order.setStatus(OrderStatus.ORDERED);
+//        order.setRecipientEmail("abs.sad.asd");
 
         this.productService.addImage(1L, "http://example.com/image1.png");
     }

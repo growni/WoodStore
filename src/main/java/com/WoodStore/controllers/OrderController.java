@@ -20,24 +20,5 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/create")
-    public void placeOrder(@RequestBody Set<Product> products) {
-        Order order = this.orderService.createOrder(products);
-        this.orderService.placeOrder(order.getId());
-    }
 
-    @GetMapping
-    public Set<Order> getAllOrders() {
-        return this.orderService.getAllOrders();
-    }
-
-    @GetMapping("/{id}")
-    public Order getOrderById(Long orderId) {
-        return this.orderService.getOrderById(orderId);
-    }
-
-    @PatchMapping("/update/status")
-    public void updateOrderStatus(@RequestBody Order order) {
-        this.orderService.updateStatus(order.getId(), order.getStatus());
-    }
 }
