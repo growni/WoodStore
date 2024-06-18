@@ -1,7 +1,6 @@
 To run the backend part of the project locally follow the guidlines:
 
 1. Install MySQL server for connection with the database - https://www.mysql.com/products/workbench/
-   _! For detailed installation guide, please follow the link -> https://www.simplilearn.com/tutorials/mysql-tutorial/mysql-workbench-installation !__
    - (Optional) During installation add MySQL workbench for easier database management and layout
    - Start mySQL server locally and authorize
 2. Install IDE for the project. (Recommended Intellij IDEA - https://www.jetbrains.com/idea/)
