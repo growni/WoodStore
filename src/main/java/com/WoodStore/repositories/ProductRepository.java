@@ -23,4 +23,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query(value = "SELECT * FROM products WHERE LENGTH(emails) > 0", nativeQuery = true)
     List<Product> findAllSubscribedProducts();
 
+    @Query("SELECT p FROM Product p ORDER BY p.width ASC")
+    List<Product> sortBySizeAsc();
+
+    @Query("SELECT p FROM Product p ORDER BY p.width DESC")
+    List<Product> sortBySizeDesc();
+
 }

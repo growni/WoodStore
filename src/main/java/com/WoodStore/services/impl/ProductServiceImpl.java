@@ -130,6 +130,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> sortBySizeAsc() {
+        return this.productRepository.sortBySizeAsc();
+    }
+
+    @Override
+    public List<Product> sortBySizeDesc() {
+        return this.productRepository.sortBySizeDesc();
+    }
+
+    @Override
     public void updateName(Long productId, String name) {
         validateName(name);
 

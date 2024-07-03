@@ -125,6 +125,16 @@ public class ProductController {
         return this.productService.sortByFavorites();
     }
 
+    @GetMapping("/sort/size/asc")
+    public List<Product> sortBySizeAsc() {
+        return this.productService.sortBySizeAsc();
+    }
+
+    @GetMapping("/sort/size/desc")
+    public List<Product> sortBySizeDesc() {
+        return this.productService.sortBySizeDesc();
+    }
+
     @PatchMapping("/subscribe")
     public void subscribeForProduct(@RequestBody SubscribeRequest request) {
         this.productService.addEmail(request.getProductId(), request.getEmail());

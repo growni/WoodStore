@@ -20,6 +20,8 @@ public interface ProductService {
     List<Product> sortByPriceAsc();
     List<Product> sortByPriceDesc();
     List<Product> sortByFavorites();
+    List<Product> sortBySizeAsc();
+    List<Product> sortBySizeDesc();
     void deleteProductById(Long productId);
     void updateDescription(Long productId, String description);
     void updateName(Long productId, String name);
