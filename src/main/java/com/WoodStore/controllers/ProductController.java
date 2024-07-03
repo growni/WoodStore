@@ -1,5 +1,7 @@
 package com.WoodStore.controllers;
 
+import com.WoodStore.constants.ProductCategory;
+import com.WoodStore.constants.ProductMaterial;
 import com.WoodStore.entities.Product;
 import com.WoodStore.entities.dtos.SubscribeRequest;
 import com.WoodStore.services.ProductService;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/products")
@@ -44,19 +47,17 @@ public class ProductController {
         return this.productService.findProductsByName(name);
     }
 
-    @GetMapping("/filter/price/lower")
-    public List<Product> filterLowerPriceProducts(@RequestParam Double price) {
-        return this.productService.findProductsCheaperThan(price);
-    }
-
-    @GetMapping("/filter/price/greater")
-    public List<Product> filterGreaterPriceProducts(@RequestParam Double price) {
-        return this.productService.findProductsMoreExpensiveThan(price);
-    }
-
     @GetMapping("/filter/available")
     public List<Product> filterAvailableProducts() {
         return this.productService.findAvailableProducts();
+    }
+
+    @GetMapping("/filter")
+    public List<Product> filter(
+            @RequestParam(required = false)Double price,
+            @RequestParam(required = false)Set<ProductMaterial> materials,
+            @RequestParam(required = false)ProductCategory category) {
+        return productService.filter(price, materials, category);
     }
 
     @PatchMapping("/update/name")

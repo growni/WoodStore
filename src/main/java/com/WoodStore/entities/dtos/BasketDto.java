@@ -17,7 +17,14 @@ public class BasketDto {
     private Long id;
     private Set<BasketItemDto> basketItems;
     private Double totalPrice;
+    private String email;
 
+    public BasketDto(Long id, Set<BasketItem> basketItems, String email) {
+        this.id = id;
+        this.basketItems = basketItems.stream().map(BasketItemDto::new).collect(Collectors.toSet());
+        this.totalPrice = basketItems.stream().mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity()).sum();
+        this.email = email;
+    }
     public BasketDto(Long id, Set<BasketItem> basketItems) {
         this.id = id;
         this.basketItems = basketItems.stream().map(BasketItemDto::new).collect(Collectors.toSet());

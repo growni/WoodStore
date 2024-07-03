@@ -20,7 +20,6 @@ import java.util.Set;
 @Entity
 @Table(name = "baskets")
 @Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +29,9 @@ public class Basket {
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BasketItem> basketItems;
 
+    private String email;
+    private Double totalPrice;
+
     public void addItem(Product product, Integer quantity) {
         BasketItem basketItem = new BasketItem(product, this, quantity);
         basketItems.add(basketItem);
@@ -37,14 +39,15 @@ public class Basket {
 
     public Basket() {
         this.basketItems = new HashSet<>();
+        setTotalPrice();
     }
 
     public void removeItem(BasketItem basketItem) {
         basketItems.remove(basketItem);
     }
 
-    public Double getTotalPrice() {
-        return basketItems.stream()
+    public void setTotalPrice() {
+        this.totalPrice =  basketItems.stream()
                 .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
                 .sum();
     }

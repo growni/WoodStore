@@ -1,5 +1,7 @@
 package com.WoodStore.entities;
 
+import com.WoodStore.constants.ProductCategory;
+import com.WoodStore.constants.ProductMaterial;
 import com.WoodStore.utils.SetToStringConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,10 @@ public class Product {
     private Integer quantity;
     @Column(name = "image_url")
     private String imageUrl;
+    @Enumerated(EnumType.STRING)
+    private ProductMaterial material;
+    @Enumerated(EnumType.STRING)
+    private ProductCategory category;
 
 
     @Convert(converter = SetToStringConverter.class)

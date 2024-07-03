@@ -1,8 +1,10 @@
 package com.WoodStore.controllers;
 
+
 import com.WoodStore.entities.Basket;
 import com.WoodStore.entities.Product;
 import com.WoodStore.entities.dtos.BasketDto;
+import com.WoodStore.services.BasketItemService;
 import com.WoodStore.services.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +14,15 @@ import org.springframework.web.bind.annotation.*;
 @SessionAttributes("basket")
 public class BasketController {
 
+
+    private final BasketService basketService;
+    private final BasketItemService basketItemService;
+
     @Autowired
-    private BasketService basketService;
+    public BasketController(BasketService basketService, BasketItemService basketItemService) {
+        this.basketService = basketService;
+        this.basketItemService = basketItemService;
+    }
 
     @GetMapping
     public BasketDto getBasket() {
@@ -38,5 +47,10 @@ public class BasketController {
     @GetMapping("/total")
     public Double getTotalPrice() {
         return basketService.getTotalPrice();
+    }
+
+    @PostMapping("/checkout")
+    public void checkout(@RequestBody Basket basket) {
+        basketItemService.checkout(basket);
     }
 }

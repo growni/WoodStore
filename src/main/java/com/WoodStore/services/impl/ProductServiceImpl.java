@@ -1,5 +1,8 @@
 package com.WoodStore.services.impl;
 
+import com.WoodStore.configuration.ProductSpecification;
+import com.WoodStore.constants.ProductCategory;
+import com.WoodStore.constants.ProductMaterial;
 import com.WoodStore.entities.Product;
 import com.WoodStore.exceptions.*;
 import com.WoodStore.repositories.ProductRepository;
@@ -76,6 +79,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return products;
+    }
+
+    @Override
+    public List<Product> filter(Double price, Set<ProductMaterial> materials, ProductCategory category) {
+        return productRepository.findAll(new ProductSpecification(price, materials, category));
     }
 
     @Override
@@ -241,6 +249,22 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = getProductById(productId);
         product.setImageUrl(imgUrl);
+
+        this.productRepository.save(product);
+    }
+
+    @Override
+    public void updateMaterial(Long productId, ProductMaterial material) {
+        Product product = getProductById(productId);
+        product.setMaterial(material);
+
+        this.productRepository.save(product);
+    }
+
+    @Override
+    public void updateCategory(Long productId, ProductCategory category) {
+        Product product = getProductById(productId);
+        product.setCategory(category);
 
         this.productRepository.save(product);
     }

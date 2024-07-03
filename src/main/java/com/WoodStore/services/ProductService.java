@@ -1,9 +1,12 @@
 package com.WoodStore.services;
 
+import com.WoodStore.constants.ProductCategory;
+import com.WoodStore.constants.ProductMaterial;
 import com.WoodStore.entities.Product;
 import com.WoodStore.exceptions.ProductNotFound;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProductService {
     Product addProduct(Product product);
@@ -12,6 +15,7 @@ public interface ProductService {
     List<Product> findProductsCheaperThan(Double price) throws ProductNotFound;
     List<Product> findProductsMoreExpensiveThan(Double price) throws ProductNotFound;
     List<Product> findAvailableProducts();
+    List<Product> filter(Double price, Set<ProductMaterial> materials, ProductCategory category);
     List<Product> findProductsByName(String name);
     List<Product> sortByPriceAsc();
     List<Product> sortByPriceDesc();
@@ -28,5 +32,7 @@ public interface ProductService {
     void removeEmail(Long productId, String email);
     void addImage(Long productId, String imgUrl);
     void updateImgUrl(Long productId, String imgUrl);
+    void updateMaterial(Long productId, ProductMaterial material);
+    void updateCategory(Long productId, ProductCategory category);
     boolean removeImgUrl(Long productId, String imgUrl);
 }

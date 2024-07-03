@@ -12,4 +12,5 @@ public interface BasketService {
     void removeItem(Product product);
     Double getTotalPrice();
     void clearBasket();
+    void checkout(Basket basket);
 }

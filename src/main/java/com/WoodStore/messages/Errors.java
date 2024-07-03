@@ -9,7 +9,7 @@ public enum Errors {
     public static final String PRODUCT_NAME_LENGTH_ERROR = "Product name must be between 1 and 255 symbols long.";
     public static final String PRODUCT_NAME_ALREADY_EXISTS = "Product with that name already exists.";
     public static final String PRODUCT_DESCRIPTION_LENGTH_ERROR = "Product description can't be more than 1000 symbols long.";
-    public static final String PRODUCT_PRICE_ERROR = "Product price must be between 1.00 and 3500.";
+    public static final String PRODUCT_PRICE_ERROR = "Product price must be between 100.00 and 10000.";
     public static final String PRODUCT_QUANTITY_ERROR = "Product quantity must be between 0 and 200.";
     public static final String PRODUCT_WIDTH_ERROR = "Product width must be between 1 and 500.";
     public static final String PRODUCT_HEIGHT_ERROR = "Product height must be between 1 and 300.";

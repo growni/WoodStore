@@ -1,7 +1,6 @@
 package com.WoodStore.services.impl;
 
 import com.WoodStore.entities.Basket;
-import com.WoodStore.entities.BasketItem;
 import com.WoodStore.entities.Product;
 import com.WoodStore.entities.dtos.BasketDto;
 import com.WoodStore.repositories.BasketRepository;
@@ -12,12 +11,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class BasketServiceImpl implements BasketService {
 
-    @Autowired
     private Basket basket;
+    private final BasketRepository basketRepository;
+
+
+    @Autowired
+    public BasketServiceImpl(Basket basket, BasketRepository basketRepository) {
+        this.basket = basket;
+        this.basketRepository = basketRepository;
+    }
 
     @Override
     public BasketDto getBasket() {
-        return new BasketDto(basket.getId(), basket.getBasketItems());
+        return new BasketDto(basket.getId(), basket.getBasketItems(), basket.getEmail());
     }
 
     public void addItem(Product product, Integer quantity) {
@@ -34,5 +40,11 @@ public class BasketServiceImpl implements BasketService {
 
     public void clearBasket() {
         basket.getBasketItems().clear();
+    }
+
+    @Override
+    public void checkout(Basket basket) {
+        basket.setTotalPrice();
+        this.basketRepository.save(basket);
     }
 }

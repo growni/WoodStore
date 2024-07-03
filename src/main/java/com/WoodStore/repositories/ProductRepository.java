@@ -2,13 +2,14 @@ package com.WoodStore.repositories;
 
 import com.WoodStore.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     List<Product> findProductsByName(String name);
     List<Product> findAllByPriceLessThan(Double price);
     List<Product> findAllByPriceGreaterThan(Double price);
