@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "baskets")
@@ -30,6 +31,11 @@ public class Basket {
             }
         }
         items.add(new BasketItem(this, product, quantity));
+        setTotalPrice();
+    }
+
+    public void setTotalPrice() {
+        this.totalPrice = this.getItems().stream().mapToDouble(item -> item.getProduct().getPrice()).sum();
     }
 
     public void removeItem(Product product) {

@@ -50,37 +50,21 @@ public class Order {
     private void validateRecipient() {
         Recipient recipient = getRecipient();
 
-        if(recipient.getEmail() == null || recipient.getEmail().trim().isEmpty()) {
-            throw new OrderError(INVALID_ORDER_RECIPIENT_EMAIL);
+        if(recipient == null) {
+            throw new OrderError(INVALID_ORDER_RECIPIENT);
         }
 
-        if(recipient.getFirstName() == null || recipient.getFirstName().trim().isEmpty()) {
-            throw new OrderError(INVALID_ORDER_RECIPIENT_FIRST_NAME);
-        }
-
-        if(recipient.getLastName() == null || recipient.getLastName().trim().isEmpty()) {
-            throw new OrderError(INVALID_ORDER_RECIPIENT_LAST_NAME);
-        }
-
-        if(recipient.getPhoneNumber() == null || recipient.getPhoneNumber().trim().isEmpty()) {
-            throw new OrderError(INVALID_ORDER_RECIPIENT_PHONE);
-        }
+        recipient.validate();
     }
 
     private void validateCarrier() {
         Carrier carrier = getCarrier();
 
-        if(carrier.getRegion() == null || carrier.getRegion().trim().isEmpty()) {
-            throw new OrderError(INVALID_ORDER_CARRIER_REGION);
+        if(carrier == null) {
+            throw new OrderError(INVALID_ORDER_CARRIER);
         }
 
-        if(carrier.getCity() == null || carrier.getCity().trim().isEmpty()) {
-            throw new OrderError(INVALID_ORDER_CARRIER_CITY);
-        }
-
-        if(carrier.getAddress() == null || carrier.getAddress().trim().isEmpty()) {
-            throw new OrderError(INVALID_ORDER_CARRIER_ADDRESS);
-        }
+        carrier.validate();
     }
 
     private void validateBasket() {
