@@ -87,12 +87,12 @@ public class ProductController {
 
     @PatchMapping("/update/height")
     public void updateProductHeight(@RequestBody Product product) {
-        this.productService.updateWidth(product.getId(), product.getHeight());
+        this.productService.updateHeight(product.getId(), product.getHeight());
     }
 
     @PatchMapping("/update/weight")
     public void updateProductWeight(@RequestBody Product product) {
-        this.productService.updateWidth(product.getId(), product.getWeight());
+        this.productService.updateWeight(product.getId(), product.getWeight());
     }
 
     @PatchMapping("/update/image")

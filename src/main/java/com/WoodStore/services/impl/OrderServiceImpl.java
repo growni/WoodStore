@@ -1,6 +1,5 @@
 package com.WoodStore.services.impl;
 
-import com.WoodStore.entities.Basket;
 import com.WoodStore.repositories.OrderRepository;
 import com.WoodStore.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,5 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository = orderRepository;
     }
 
-    @Override
-    public void placeOrder(Basket basket) {
 
-    }
 }

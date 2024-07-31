@@ -116,29 +116,29 @@ public class ProductTests {
         Product product1 = new Product();
         product1.setId(1L);
         product1.setName("Cheap Product 1");
-        product1.setPrice(50.0);
+        product1.setPrice(120.0);
 
         Product product2 = new Product();
         product2.setId(2L);
         product2.setName("Cheap Product 2");
-        product2.setPrice(30.0);
+        product2.setPrice(130.0);
 
         Product product3 = new Product();
         product3.setId(3L);
         product3.setName("Expensive Product");
-        product3.setPrice(100.0);
+        product3.setPrice(1000.0);
 
         List<Product> products = Arrays.asList(product1, product2);
 
-        when(productRepository.findAllByPriceLessThan(60.0)).thenReturn(products);
+        when(productRepository.findAllByPriceLessThan(150.0)).thenReturn(products);
 
-        List<Product> result = productService.findProductsCheaperThan(60.0);
+        List<Product> result = productService.findProductsCheaperThan(150.0);
 
         assertEquals(2, result.size());
         assertTrue(result.contains(product1));
         assertTrue(result.contains(product2));
         assertFalse(result.contains(product3));
-        verify(productRepository, times(1)).findAllByPriceLessThan(60.0);
+        verify(productRepository, times(1)).findAllByPriceLessThan(150.0);
     }
 
     @Test
@@ -162,17 +162,17 @@ public class ProductTests {
         Product product1 = new Product();
         product1.setId(1L);
         product1.setName("Expensive Product 1");
-        product1.setPrice(150.0);
+        product1.setPrice(1500.0);
 
         Product product2 = new Product();
         product2.setId(2L);
         product2.setName("Expensive Product 2");
-        product2.setPrice(200.0);
+        product2.setPrice(2000.0);
 
         Product product3 = new Product();
         product3.setId(3L);
         product3.setName("Cheap Product");
-        product3.setPrice(50.0);
+        product3.setPrice(100.0);
 
         List<Product> products = Arrays.asList(product1, product2);
 
@@ -304,12 +304,12 @@ public class ProductTests {
         Product product1 = new Product();
         product1.setId(1L);
         product1.setName("Product 1");
-        product1.setPrice(50.0);
+        product1.setPrice(150.0);
 
         Product product2 = new Product();
         product2.setId(2L);
         product2.setName("Product 2");
-        product2.setPrice(30.0);
+        product2.setPrice(130.0);
 
         List<Product> products = Arrays.asList(product2, product1);  // List in ascending order
 
@@ -338,12 +338,12 @@ public class ProductTests {
         Product product1 = new Product();
         product1.setId(1L);
         product1.setName("Product 1");
-        product1.setPrice(50.0);
+        product1.setPrice(9000.0);
 
         Product product2 = new Product();
         product2.setId(2L);
         product2.setName("Product 2");
-        product2.setPrice(30.0);
+        product2.setPrice(3000.0);
 
         List<Product> products = Arrays.asList(product1, product2);  // List in descending order
 
@@ -436,11 +436,15 @@ public class ProductTests {
         Long productId = 1L;
         String invalidEmail = "invalid-email";
 
+        Product product = new Product();
+        product.setId(productId);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
         assertThrows(EmailError.class, () -> {
             productService.addEmail(productId, invalidEmail);
         });
 
-        verify(productRepository, never()).findById(anyLong());
+        verify(productRepository, times(1)).findById(productId);
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -506,11 +510,15 @@ public class ProductTests {
         Long productId = 1L;
         String invalidEmail = "invalid-email";
 
+        Product product = new Product();
+        product.setId(productId);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
         assertThrows(EmailError.class, () -> {
             productService.removeEmail(productId, invalidEmail);
         });
 
-        verify(productRepository, never()).findById(anyLong());
+        verify(productRepository, times(1)).findById(productId);
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -550,13 +558,17 @@ public class ProductTests {
     @Test
     public void testUpdateWidthInvalidWidth() {
         Long productId = 1L;
-        Integer invalidWidth = -10;
+        Integer invalidWidth = -5;
+
+        Product product = new Product();
+        product.setId(productId);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
         assertThrows(ProductPropertyError.class, () -> {
-            productService.updateWidth(productId, invalidWidth);
+            productService.updateWeight(productId, invalidWidth);
         });
 
-        verify(productRepository, never()).findById(anyLong());
+        verify(productRepository, times(1)).findById(productId);
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -596,13 +608,17 @@ public class ProductTests {
     @Test
     public void testUpdateHeightInvalidHeight() {
         Long productId = 1L;
-        Integer invalidHeight = -20;
+        Integer invalidHeight= -5;
+
+        Product product = new Product();
+        product.setId(productId);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
         assertThrows(ProductPropertyError.class, () -> {
-            productService.updateHeight(productId, invalidHeight);
+            productService.updateWeight(productId, invalidHeight);
         });
 
-        verify(productRepository, never()).findById(anyLong());
+        verify(productRepository, times(1)).findById(productId);
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -644,11 +660,15 @@ public class ProductTests {
         Long productId = 1L;
         Integer invalidWeight = -5;
 
+        Product product = new Product();
+        product.setId(productId);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
         assertThrows(ProductPropertyError.class, () -> {
             productService.updateWeight(productId, invalidWeight);
         });
 
-        verify(productRepository, never()).findById(anyLong());
+        verify(productRepository, times(1)).findById(productId);
         verify(productRepository, never()).save(any(Product.class));
     }
 

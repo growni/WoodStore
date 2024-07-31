@@ -30,13 +30,13 @@ public class Order {
     @Column(name = "total_price")
     private Double totalPrice;
 
-    @Column(name = "recipient_email")
-    private String recipientEmail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private Recipient recipient;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "basket_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "basket_id")
     private Basket basket;
-
 
     public Order() {
         this.orderDate = LocalDate.now();

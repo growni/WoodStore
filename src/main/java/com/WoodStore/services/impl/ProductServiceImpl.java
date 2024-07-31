@@ -32,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product addProduct(Product product) {
-        validateProduct(product);
+        product.validate();
 
         this.productRepository.save(product);
         return product;
@@ -141,8 +141,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateName(Long productId, String name) {
-        validateName(name);
-
         Product product = getProductById(productId);
         product.setName(name);
 
@@ -151,8 +149,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateDescription(Long productId, String description) {
-        validateDescription(description);
-
         Product product = getProductById(productId);
         product.setDescription(description);
 
@@ -161,8 +157,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updatePrice(Long productId, Double price) {
-        validatePrice(price);
-
         Product product = getProductById(productId);
         product.setPrice(price);
 
@@ -171,8 +165,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateWidth(Long productId, Integer width) {
-        validateWidth(width);
-
         Product product = getProductById(productId);
         product.setWidth(width);
 
@@ -181,8 +173,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateHeight(Long productId, Integer height) {
-        validateHeight(height);
-
         Product product = getProductById(productId);
         product.setHeight(height);
 
@@ -191,8 +181,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateWeight(Long productId, Integer weight) {
-        validateWeight(weight);
-
         Product product = getProductById(productId);
         product.setWeight(weight);
 
@@ -201,12 +189,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateAvailableQuantity(Long productId, Integer quantity) {
-
         if(quantity < 0) {
             quantity = 0;
         }
-
-        validateQuantity(quantity);
 
         Product product = getProductById(productId);
         product.setQuantity(quantity);
@@ -216,18 +201,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addEmail(Long productId, String email) {
-        validateEmail(email);
-
         Product product = getProductById(productId);
-        product.getEmails().add(email);
+
+        product.addEmail(email);
 
         this.productRepository.save(product);
     }
 
     @Override
     public void removeEmail(Long productId, String email) {
-        validateEmail(email);
-
         Product product = getProductById(productId);
         Set<String> emails = product.getEmails();
 
@@ -245,18 +227,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addImage(Long productId, String imgUrl) {
-        validateImageUrl(imgUrl);
-
         Product product = getProductById(productId);
-        product.getAdditionalImgUrls().add(imgUrl);
+
+        product.addAdditionalImage(imgUrl);
 
         this.productRepository.save(product);
     }
 
     @Override
     public void updateImgUrl(Long productId, String imgUrl) {
-        validateImageUrl(imgUrl);
-
         Product product = getProductById(productId);
         product.setImageUrl(imgUrl);
 
@@ -292,81 +271,81 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository.save(product);
         return true;
     }
-
-    private void validateEmail(String email) {
-        String emailRegexPattern = "^(.+)@(\\S+)$";
-        boolean isValidEmail = Pattern.compile(emailRegexPattern).matcher(email).matches();
-
-        if(!isValidEmail) {
-            throw new EmailError(INVALID_EMAIL_ERROR);
-        }
-
-    }
-
-    private void validateName(String name) {
-        if(name == null || name.trim().length() == PRODUCT_NAME_MIN_LENGTH || name.trim().length() > PRODUCT_NAME_MAX_LENGTH) {
-            throw new ProductPropertyError(PRODUCT_NAME_LENGTH_ERROR);
-        }
-
-        List<Product> products = findProductsByName(name);
-
-        if(products.size() > 0) {
-            throw new ProductPropertyError(PRODUCT_NAME_ALREADY_EXISTS);
-        }
-    }
-
-    private void validateDescription(String description) {
-        if(description.trim().length() > PRODUCT_DESCRIPTION_MAX_LENGTH) {
-            throw new ProductPropertyError(PRODUCT_DESCRIPTION_LENGTH_ERROR);
-        }
-    }
-
-    private void validatePrice(Double price) {
-        if(price == null || price.isNaN() || price < PRODUCT_PRICE_MIN || price > PRODUCT_PRICE_MAX) {
-            throw new ProductPropertyError(PRODUCT_PRICE_ERROR);
-        }
-    }
-
-    private void validateWidth(Integer width) {
-        if(width < PRODUCT_WIDTH_MIN || width > PRODUCT_WIDTH_MAX) {
-            throw new ProductPropertyError(PRODUCT_WIDTH_ERROR);
-        }
-    }
-
-    private void validateHeight(Integer height) {
-        if(height < PRODUCT_HEIGHT_MIN || height > PRODUCT_HEIGHT_MAX) {
-            throw new ProductPropertyError(PRODUCT_HEIGHT_ERROR);
-        }
-    }
-
-    private void validateWeight(Integer weight) {
-        if(weight < PRODUCT_WEIGHT_MIN || weight > PRODUCT_WEIGHT_MAX) {
-            throw new ProductPropertyError(PRODUCT_WEIGHT_ERROR);
-        }
-    }
-
-    private void validateQuantity(Integer quantity) {
-        if(quantity == null || quantity < PRODUCT_QUANTITY_MIN || quantity > PRODUCT_QUANTITY_MAX) {
-            throw new ProductPropertyError(PRODUCT_QUANTITY_ERROR);
-        }
-    }
-
-    private void validateImageUrl(String url) {
-        String emailRegexPattern = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
-        boolean isValidUrl = Pattern.compile(emailRegexPattern).matcher(url).matches();
-
-        if(!isValidUrl) {
-            throw new ProductPropertyError(INVALID_IMAGE_URL);
-        }
-    }
-
-    private void validateProduct(Product product) {
-        validateName(product.getName());
-        validateDescription(product.getDescription());
-        validatePrice(product.getPrice());
-        validateWidth(product.getWidth());
-        validateHeight(product.getHeight());
-        validateWeight(product.getWeight());
-        validateQuantity(product.getQuantity());
-    }
+//
+//    private void validateEmail(String email) {
+//        String emailRegexPattern = "^(.+)@(\\S+)$";
+//        boolean isValidEmail = Pattern.compile(emailRegexPattern).matcher(email).matches();
+//
+//        if(!isValidEmail) {
+//            throw new EmailError(INVALID_EMAIL_ERROR);
+//        }
+//
+//    }
+//
+//    private void validateName(String name) {
+//        if(name == null || name.trim().length() == PRODUCT_NAME_MIN_LENGTH || name.trim().length() > PRODUCT_NAME_MAX_LENGTH) {
+//            throw new ProductPropertyError(PRODUCT_NAME_LENGTH_ERROR);
+//        }
+//
+//        List<Product> products = findProductsByName(name);
+//
+//        if(products.size() > 0) {
+//            throw new ProductPropertyError(PRODUCT_NAME_ALREADY_EXISTS);
+//        }
+//    }
+//
+//    private void validateDescription(String description) {
+//        if(description.trim().length() > PRODUCT_DESCRIPTION_MAX_LENGTH) {
+//            throw new ProductPropertyError(PRODUCT_DESCRIPTION_LENGTH_ERROR);
+//        }
+//    }
+//
+//    private void validatePrice(Double price) {
+//        if(price == null || price.isNaN() || price < PRODUCT_PRICE_MIN || price > PRODUCT_PRICE_MAX) {
+//            throw new ProductPropertyError(PRODUCT_PRICE_ERROR);
+//        }
+//    }
+//
+//    private void validateWidth(Integer width) {
+//        if(width < PRODUCT_WIDTH_MIN || width > PRODUCT_WIDTH_MAX) {
+//            throw new ProductPropertyError(PRODUCT_WIDTH_ERROR);
+//        }
+//    }
+//
+//    private void validateHeight(Integer height) {
+//        if(height < PRODUCT_HEIGHT_MIN || height > PRODUCT_HEIGHT_MAX) {
+//            throw new ProductPropertyError(PRODUCT_HEIGHT_ERROR);
+//        }
+//    }
+//
+//    private void validateWeight(Integer weight) {
+//        if(weight < PRODUCT_WEIGHT_MIN || weight > PRODUCT_WEIGHT_MAX) {
+//            throw new ProductPropertyError(PRODUCT_WEIGHT_ERROR);
+//        }
+//    }
+//
+//    private void validateQuantity(Integer quantity) {
+//        if(quantity == null || quantity < PRODUCT_QUANTITY_MIN || quantity > PRODUCT_QUANTITY_MAX) {
+//            throw new ProductPropertyError(PRODUCT_QUANTITY_ERROR);
+//        }
+//    }
+//
+//    private void validateImageUrl(String url) {
+//        String emailRegexPattern = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
+//        boolean isValidUrl = Pattern.compile(emailRegexPattern).matcher(url).matches();
+//
+//        if(!isValidUrl) {
+//            throw new ProductPropertyError(INVALID_IMAGE_URL);
+//        }
+//    }
+//
+//    private void validateProduct(Product product) {
+//        validateName(product.getName());
+//        validateDescription(product.getDescription());
+//        validatePrice(product.getPrice());
+//        validateWidth(product.getWidth());
+//        validateHeight(product.getHeight());
+//        validateWeight(product.getWeight());
+//        validateQuantity(product.getQuantity());
+//    }
 }
