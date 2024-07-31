@@ -59,18 +59,15 @@ public class BasketServiceImpl implements BasketService {
     public void increaseQuantity(Long basketId, Long productId) {
         Basket basket = getBasket(basketId);
         Product product = this.productRepository.findById(productId).orElseThrow(() -> new ProductNotFound(String.format(PRODUCT_NOT_FOUND_ERROR, productId)));
+        BasketItem item = basket.getItem(product);
 
-        if(product.getQuantity() < 1) {
+        if(product.getQuantity() < item.getQuantity()) {
             throw new ProductPropertyError(PRODUCT_OUT_OF_STOCK_ERROR);
         }
 
-        BasketItem item = basket.getItem(product);
         item.setQuantity(item.getQuantity() + 1);
 
-        product.setQuantity(product.getQuantity() - 1);
-
         this.basketItemRepository.save(item);
-        this.productRepository.save(product);
         this.basketRepository.save(basket);
     }
 
@@ -86,10 +83,7 @@ public class BasketServiceImpl implements BasketService {
             basket.removeItem(product);
         }
 
-        product.setQuantity(product.getQuantity() + 1);
-
         this.basketItemRepository.save(item);
-        this.productRepository.save(product);
         this.basketRepository.save(basket);
     }
 

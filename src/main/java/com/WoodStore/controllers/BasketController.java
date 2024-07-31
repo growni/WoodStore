@@ -26,7 +26,7 @@ public class BasketController {
         return this.basketService.getBasket(basketId);
     }
 
-    @PostMapping("/{basketId}/products/{productId}")
+    @PutMapping("/{basketId}/products/{productId}")
     public void addProduct(@PathVariable Long basketId, @PathVariable Long productId) {
         this.basketService.addProduct(basketId, productId);
     }

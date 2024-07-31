@@ -22,7 +22,6 @@ import static com.WoodStore.messages.Errors.INVALID_IMAGE_URL;
 
 @Getter
 @Entity
-@AllArgsConstructor
 @Table(name = "products")
 public class Product {
     @Id
@@ -54,6 +53,23 @@ public class Product {
     public Product() {
         this.emails = new HashSet<>();
         this.additionalImgUrls = new HashSet<>();
+    }
+
+    public Product(Long id, String description, String name, Double price, Integer width, Integer height, Integer weight, Integer quantity, String imageUrl, ProductMaterial material, ProductCategory category, Set<String> additionalImgUrls, Set<String> emails) {
+        validate();
+        this.id = id;
+        this.description = description;
+        this.name = name;
+        this.price = price;
+        this.width = width;
+        this.height = height;
+        this.weight = weight;
+        this.quantity = quantity;
+        this.imageUrl = imageUrl;
+        this.material = material;
+        this.category = category;
+        this.additionalImgUrls = additionalImgUrls;
+        this.emails = emails;
     }
 
     @PrePersist
