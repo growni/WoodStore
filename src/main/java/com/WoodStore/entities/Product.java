@@ -56,7 +56,6 @@ public class Product {
     }
 
     public Product(Long id, String description, String name, Double price, Integer width, Integer height, Integer weight, Integer quantity, String imageUrl, ProductMaterial material, ProductCategory category, Set<String> additionalImgUrls, Set<String> emails) {
-        validate();
         this.id = id;
         this.description = description;
         this.name = name;
@@ -70,6 +69,7 @@ public class Product {
         this.category = category;
         this.additionalImgUrls = additionalImgUrls;
         this.emails = emails;
+        validate();
     }
 
     @PrePersist
@@ -95,13 +95,13 @@ public class Product {
     }
 
     public void validate() {
-        validateName(this.getName());
-        validateDescription(this.getDescription());
-        validatePrice(this.getPrice());
-        validateWidth(this.getWidth());
-        validateHeight(this.getHeight());
-        validateWeight(this.getWeight());
-        validateQuantity(this.getQuantity());
+        validateName(getName());
+        validateDescription(getDescription());
+        validatePrice(getPrice());
+        validateWidth(getWidth());
+        validateHeight(getHeight());
+        validateWeight(getWeight());
+        validateQuantity(getQuantity());
     }
 
     public void setId(Long id) {
@@ -202,7 +202,7 @@ public class Product {
     }
 
     private void validateName(String name) {
-        if(name == null || name.trim().length() == PRODUCT_NAME_MIN_LENGTH || name.trim().length() > PRODUCT_NAME_MAX_LENGTH) {
+        if(name == null || name.trim().length() < PRODUCT_NAME_MIN_LENGTH || name.trim().length() > PRODUCT_NAME_MAX_LENGTH) {
             throw new ProductPropertyError(PRODUCT_NAME_LENGTH_ERROR);
         }
     }

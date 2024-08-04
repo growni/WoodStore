@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import static com.WoodStore.messages.Errors.BASKET_NOT_FOUND;
 import static com.WoodStore.messages.Errors.ORDER_NOT_FOUND_ERROR;
+import static com.WoodStore.messages.email.Body.ORDER_CONFIRMATION_BODY;
+import static com.WoodStore.messages.email.Subject.ORDER_CONFIRMATION_SUBJECT;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -22,11 +24,13 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, BasketRepository basketRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, BasketRepository basketRepository, EmailService emailService) {
         this.orderRepository = orderRepository;
         this.basketRepository = basketRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -73,5 +77,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.ORDERED);
 
         this.orderRepository.save(order);
+
+        this.emailService.sendEmail(order.getRecipient().getEmail(), ORDER_CONFIRMATION_SUBJECT, String.format(ORDER_CONFIRMATION_BODY, order.getRecipient().getFirstName()));
     }
 }
