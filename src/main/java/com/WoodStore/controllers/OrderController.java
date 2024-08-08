@@ -1,12 +1,9 @@
 package com.WoodStore.controllers;
 
-import com.WoodStore.constants.OrderStatus;
 import com.WoodStore.entities.*;
 import com.WoodStore.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/orders")

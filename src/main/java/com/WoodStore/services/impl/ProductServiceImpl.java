@@ -10,14 +10,10 @@ import com.WoodStore.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.WoodStore.constants.Constants.*;
 import static com.WoodStore.messages.Errors.*;
 
 @Service

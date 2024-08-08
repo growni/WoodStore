@@ -1,16 +1,13 @@
 package com.WoodStore.entities;
 
 import com.WoodStore.constants.OrderStatus;
-import com.WoodStore.entities.dtos.ProductDto;
 import com.WoodStore.exceptions.OrderError;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.*;
 
 import static com.WoodStore.messages.Errors.*;
 
