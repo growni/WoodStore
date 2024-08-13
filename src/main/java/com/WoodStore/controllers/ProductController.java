@@ -60,56 +60,6 @@ public class ProductController {
         return productService.filter(price, materials, category);
     }
 
-    @PatchMapping("/update/name")
-    public void updateProductName(@RequestBody Product product) {
-        this.productService.updateName(product.getId(), product.getName());
-    }
-
-    @PatchMapping("/update/description")
-    public void updateProductDescription(@RequestBody Product product) {
-        this.productService.updateDescription(product.getId(), product.getDescription());
-    }
-
-    @PatchMapping("/update/price")
-    public void updateProductPrice(@RequestBody Product product) {
-        this.productService.updatePrice(product.getId(), product.getPrice());
-    }
-
-    @PatchMapping("/update/quantity")
-    public void updateAvailableQuantity(@RequestBody Product product) {
-        this.productService.updateAvailableQuantity(product.getId(), product.getQuantity());
-    }
-
-    @PatchMapping("/update/width")
-    public void updateProductWidth(@RequestBody Product product) {
-        this.productService.updateWidth(product.getId(), product.getWidth());
-    }
-
-    @PatchMapping("/update/height")
-    public void updateProductHeight(@RequestBody Product product) {
-        this.productService.updateHeight(product.getId(), product.getHeight());
-    }
-
-    @PatchMapping("/update/weight")
-    public void updateProductWeight(@RequestBody Product product) {
-        this.productService.updateWeight(product.getId(), product.getWeight());
-    }
-
-    @PatchMapping("/update/image")
-    public void updateImgUrl(@RequestBody Product product) {
-        this.productService.updateImgUrl(product.getId(), product.getImageUrl());
-    }
-
-    @PatchMapping("/update/image/add")
-    public void addImage(@RequestBody Product product) {
-        this.productService.addImage(product.getId(), product.getImageUrl());
-    }
-
-    @DeleteMapping("/update/image/remove")
-    public boolean removeImage(@RequestBody Product product) {
-        return this.productService.removeImgUrl(product.getId(), product.getImageUrl());
-    }
-
     @GetMapping("/sort/price/asc")
     public List<Product> sortByPriceAsc() {
         return this.productService.sortByPriceAsc();

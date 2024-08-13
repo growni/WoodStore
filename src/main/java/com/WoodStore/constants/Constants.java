@@ -15,4 +15,14 @@ public enum Constants {
     public static final int PRODUCT_HEIGHT_MAX = 300;
     public static final int PRODUCT_WEIGHT_MIN = 1;
     public static final int PRODUCT_WEIGHT_MAX = 250;
+    public static final int USERNAME_LENGTH_MIN = 3;
+    public static final int USERNAME_LENGTH_MAX = 20;
+    public static final String USERNAME_VALID_REGEX = "^[a-zA-Z0-9]+$";
+    public static final int USER_PASSWORD_MIN_LENGTH = 8;
+    public static final int USER_PASSWORD_MAX_LENGTH = 50;
+    public static final String USER_PASSWORD_MISSING_UPPERCASE_REGEX = ".*[A-Z].*";
+    public static final String USER_PASSWORD_MISSING_LOWERCASE_REGEX = ".*[a-z].*";
+    public static final String USER_PASSWORD_MISSING_NUMBER_REGEX = ".*\\d.*";
+    public static final String USER_PASSWORD_MISSING_SPECIAL_REGEX = ".*[!@#$%^&*(),.?\":{}|<>].*";
+    public static final int JWT_TOKEN_EXPIRE_AFTER = 3600000; // 1 hour
 }

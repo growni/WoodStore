@@ -3,12 +3,18 @@ package com.WoodStore;
 import com.WoodStore.constants.ProductCategory;
 import com.WoodStore.constants.ProductMaterial;
 import com.WoodStore.entities.Product;
+import com.WoodStore.entities.Role;
+import com.WoodStore.entities.UserEntity;
+import com.WoodStore.repositories.RoleRepository;
+import com.WoodStore.repositories.UserRepository;
 import com.WoodStore.services.OrderService;
 import com.WoodStore.services.ProductService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -18,10 +24,16 @@ public class Runner implements ApplicationRunner {
     private final ProductService productService;
 
     private final OrderService orderService;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public Runner(ProductService productService, OrderService orderService) {
+    public Runner(ProductService productService, OrderService orderService, RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.productService = productService;
         this.orderService = orderService;
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -83,6 +95,14 @@ public class Runner implements ApplicationRunner {
             }
 
         }
+
+        this.roleRepository.save(new Role("USER"));
+        this.roleRepository.save(new Role("ADMIN"));
+        String username = "admin";
+        String password = passwordEncoder.encode("admin");
+
+        this.userRepository.save(new UserEntity(username, password, Collections.singletonList(new Role("ADMIN"))));
+
     }
 
 
