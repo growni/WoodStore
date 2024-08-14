@@ -10,11 +10,12 @@ import static com.WoodStore.messages.Errors.USERNAME_INVALID_CHARACTERS_ERROR;
 
 @Getter
 @Setter
-public class RegisterDto {
+public class UserDto {
         private String username;
         private String password;
         private String newUsername;
         private String newPassword;
+        private String newRoleName;
 
     public void validatePassword(String password) {
         if (password == null || password.isEmpty()) {

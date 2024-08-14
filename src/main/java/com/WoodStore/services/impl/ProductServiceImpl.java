@@ -135,67 +135,7 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.sortBySizeDesc();
     }
 
-    @Override
-    public void updateName(Long productId, String name) {
-        Product product = getProductById(productId);
-        product.setName(name);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updateDescription(Long productId, String description) {
-        Product product = getProductById(productId);
-        product.setDescription(description);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updatePrice(Long productId, Double price) {
-        Product product = getProductById(productId);
-        product.setPrice(price);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updateWidth(Long productId, Integer width) {
-        Product product = getProductById(productId);
-        product.setWidth(width);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updateHeight(Long productId, Integer height) {
-        Product product = getProductById(productId);
-        product.setHeight(height);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updateWeight(Long productId, Integer weight) {
-        Product product = getProductById(productId);
-        product.setWeight(weight);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updateAvailableQuantity(Long productId, Integer quantity) {
-        if(quantity < 0) {
-            quantity = 0;
-        }
-
-        Product product = getProductById(productId);
-        product.setQuantity(quantity);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
+        @Override
     public void addEmail(Long productId, String email) {
         Product product = getProductById(productId);
 
@@ -211,61 +151,128 @@ public class ProductServiceImpl implements ProductService {
 
         boolean hasEmail = emails.contains(email);
 
-        if(!hasEmail) {
+        if (!hasEmail) {
             throw new EmailError(EMAIL_NOT_SUBSCRIBED);
         }
-
-        emails.remove(email);
-        product.setEmails(emails);
-
-        this.productRepository.save(product);
     }
+//    @Override
+//    public void updateName(Long productId, String name) {
+//        Product product = getProductById(productId);
+//        product.setName(name);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateDescription(Long productId, String description) {
+//        Product product = getProductById(productId);
+//        product.setDescription(description);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updatePrice(Long productId, Double price) {
+//        Product product = getProductById(productId);
+//        product.setPrice(price);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateWidth(Long productId, Integer width) {
+//        Product product = getProductById(productId);
+//        product.setWidth(width);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateHeight(Long productId, Integer height) {
+//        Product product = getProductById(productId);
+//        product.setHeight(height);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateWeight(Long productId, Integer weight) {
+//        Product product = getProductById(productId);
+//        product.setWeight(weight);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateAvailableQuantity(Long productId, Integer quantity) {
+//        if(quantity < 0) {
+//            quantity = 0;
+//        }
+//
+//        Product product = getProductById(productId);
+//        product.setQuantity(quantity);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//
+//        emails.remove(email);
+//        product.setEmails(emails);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void addImage(Long productId, String imgUrl) {
+//        Product product = getProductById(productId);
+//
+//        product.addAdditionalImage(imgUrl);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateImgUrl(Long productId, String imgUrl) {
+//        Product product = getProductById(productId);
+//        product.setImageUrl(imgUrl);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateMaterial(Long productId, ProductMaterial material) {
+//        Product product = getProductById(productId);
+//        product.setMaterial(material);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public void updateCategory(Long productId, ProductCategory category) {
+//        Product product = getProductById(productId);
+//        product.setCategory(category);
+//
+//        this.productRepository.save(product);
+//    }
+//
+//    @Override
+//    public boolean removeImgUrl(Long productId, String imgUrl) {
+//        Product product = getProductById(productId);
+//
+//        if(!product.getAdditionalImgUrls().contains(imgUrl)) {
+//            return false;
+//        }
+//
+//        product.getAdditionalImgUrls().remove(imgUrl);
+//
+//        this.productRepository.save(product);
+//        return true;
+//    }
 
     @Override
-    public void addImage(Long productId, String imgUrl) {
-        Product product = getProductById(productId);
-
-        product.addAdditionalImage(imgUrl);
+    public void updateProduct(Product product) {
+        product.validate();
 
         this.productRepository.save(product);
     }
-
-    @Override
-    public void updateImgUrl(Long productId, String imgUrl) {
-        Product product = getProductById(productId);
-        product.setImageUrl(imgUrl);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updateMaterial(Long productId, ProductMaterial material) {
-        Product product = getProductById(productId);
-        product.setMaterial(material);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public void updateCategory(Long productId, ProductCategory category) {
-        Product product = getProductById(productId);
-        product.setCategory(category);
-
-        this.productRepository.save(product);
-    }
-
-    @Override
-    public boolean removeImgUrl(Long productId, String imgUrl) {
-        Product product = getProductById(productId);
-
-        if(!product.getAdditionalImgUrls().contains(imgUrl)) {
-            return false;
-        }
-
-        product.getAdditionalImgUrls().remove(imgUrl);
-
-        this.productRepository.save(product);
-        return true;
-    }
-
 }

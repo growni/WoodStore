@@ -4,7 +4,7 @@ package com.WoodStore.controllers;
 import com.WoodStore.entities.Product;
 import com.WoodStore.entities.Role;
 import com.WoodStore.entities.UserEntity;
-import com.WoodStore.entities.dtos.RegisterDto;
+import com.WoodStore.entities.dtos.UserDto;
 import com.WoodStore.repositories.RoleRepository;
 import com.WoodStore.repositories.UserRepository;
 import com.WoodStore.services.ProductService;
@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 @RestController
 @RequestMapping("/admin")
@@ -37,7 +38,7 @@ public class AdminController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<String> register(@RequestBody UserDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
@@ -50,8 +51,8 @@ public class AdminController {
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
 
-        Role roles = roleRepository.findByName("USER").get();
-        user.setRoles(Collections.singletonList(roles));
+        Role userRole = roleRepository.findByName("USER").get();
+        user.setRoles(new HashSet<>(Collections.singletonList(userRole)));
 
         userRepository.save(user);
 
@@ -59,12 +60,12 @@ public class AdminController {
     }
 
     @PatchMapping("/user/update/username")
-    public void changeUsername(@RequestBody RegisterDto registerDto) {
+    public void changeUsername(@RequestBody UserDto registerDto) {
         this.userService.changeUsername(registerDto);
     }
 
     @PatchMapping("/user/update/password")
-    public void changePassword(@RequestBody RegisterDto registerDto) {
+    public void changePassword(@RequestBody UserDto registerDto) {
         this.userService.changePassword(registerDto);
     }
 
@@ -73,53 +74,78 @@ public class AdminController {
         this.userService.deleteUser(userId);
     }
 
-    @PatchMapping("/product/update/name")
-    public void updateProductName(@RequestBody Product product) {
-        this.productService.updateName(product.getId(), product.getName());
+    @PutMapping("/user/addRole")
+    public void addRoleToUser(@RequestBody UserDto userDto) {
+        this.userService.addRole(userDto);
     }
 
-    @PatchMapping("/product/update/description")
-    public void updateProductDescription(@RequestBody Product product) {
-        this.productService.updateDescription(product.getId(), product.getDescription());
+    @PatchMapping("/user/removeRole")
+    public void removeRoleFromUser(@RequestBody UserDto userDto) {
+        this.userService.removeRole(userDto);
     }
 
-    @PatchMapping("/product/update/price")
-    public void updateProductPrice(@RequestBody Product product) {
-        this.productService.updatePrice(product.getId(), product.getPrice());
+    @PostMapping("/product")
+    public Product addProduct(@RequestBody Product product) {
+        return this.productService.addProduct(product);
     }
 
-    @PatchMapping("/product/update/quantity")
-    public void updateAvailableQuantity(@RequestBody Product product) {
-        this.productService.updateAvailableQuantity(product.getId(), product.getQuantity());
+    @DeleteMapping("/{id}")
+    public void deleteProductById(@PathVariable Long id) {
+        this.productService.deleteProductById(id);
     }
 
-    @PatchMapping("/product/update/width")
-    public void updateProductWidth(@RequestBody Product product) {
-        this.productService.updateWidth(product.getId(), product.getWidth());
+    @PatchMapping("/product/update")
+    public void updateProduct(@RequestBody Product product) {
+        this.productService.updateProduct(product);
     }
 
-    @PatchMapping("/product/update/height")
-    public void updateProductHeight(@RequestBody Product product) {
-        this.productService.updateHeight(product.getId(), product.getHeight());
-    }
-
-    @PatchMapping("/product/update/weight")
-    public void updateProductWeight(@RequestBody Product product) {
-        this.productService.updateWeight(product.getId(), product.getWeight());
-    }
-
-    @PatchMapping("/product/update/image")
-    public void updateImgUrl(@RequestBody Product product) {
-        this.productService.updateImgUrl(product.getId(), product.getImageUrl());
-    }
-
-    @PatchMapping("/product/update/image/add")
-    public void addImage(@RequestBody Product product) {
-        this.productService.addImage(product.getId(), product.getImageUrl());
-    }
-
-    @DeleteMapping("/product/update/image/remove")
-    public boolean removeImage(@RequestBody Product product) {
-        return this.productService.removeImgUrl(product.getId(), product.getImageUrl());
-    }
+//    @PatchMapping("/product/update/name")
+//    public void updateProductName(@RequestBody Product product) {
+//        this.productService.updateName(product.getId(), product.getName());
+//    }
+//
+//    @PatchMapping("/product/update/description")
+//    public void updateProductDescription(@RequestBody Product product) {
+//        this.productService.updateDescription(product.getId(), product.getDescription());
+//    }
+//
+//    @PatchMapping("/product/update/price")
+//    public void updateProductPrice(@RequestBody Product product) {
+//        this.productService.updatePrice(product.getId(), product.getPrice());
+//    }
+//
+//    @PatchMapping("/product/update/quantity")
+//    public void updateAvailableQuantity(@RequestBody Product product) {
+//        this.productService.updateAvailableQuantity(product.getId(), product.getQuantity());
+//    }
+//
+//    @PatchMapping("/product/update/width")
+//    public void updateProductWidth(@RequestBody Product product) {
+//        this.productService.updateWidth(product.getId(), product.getWidth());
+//    }
+//
+//    @PatchMapping("/product/update/height")
+//    public void updateProductHeight(@RequestBody Product product) {
+//        this.productService.updateHeight(product.getId(), product.getHeight());
+//    }
+//
+//    @PatchMapping("/product/update/weight")
+//    public void updateProductWeight(@RequestBody Product product) {
+//        this.productService.updateWeight(product.getId(), product.getWeight());
+//    }
+//
+//    @PatchMapping("/product/update/image")
+//    public void updateImgUrl(@RequestBody Product product) {
+//        this.productService.updateImgUrl(product.getId(), product.getImageUrl());
+//    }
+//
+//    @PatchMapping("/product/update/image/add")
+//    public void addImage(@RequestBody Product product) {
+//        this.productService.addImage(product.getId(), product.getImageUrl());
+//    }
+//
+//    @DeleteMapping("/product/update/image/remove")
+//    public boolean removeImage(@RequestBody Product product) {
+//        return this.productService.removeImgUrl(product.getId(), product.getImageUrl());
+//    }
 }

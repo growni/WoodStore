@@ -43,4 +43,6 @@ public enum Errors {
     public static final String USER_PASSWORD_MISSING_LOWERCASE_ERROR = "Password must contain at least one lowercase letter.";
     public static final String USER_PASSWORD_MISSING_NUMBER_ERROR = "Password must contain at least one number.";
     public static final String USER_PASSWORD_MISSING_SPECIAL_ERROR = "Password must contain at least one special character.";
+    public static final String ROLE_NOT_FOUND_ERROR = "Role with name %s not found.";
+    public static final String INVALID_ROLE_PROMOTION_HIERARCHY = "Can't manipulate the role of hierarchy level %s.";
 }

@@ -9,15 +9,13 @@ import com.WoodStore.repositories.RoleRepository;
 import com.WoodStore.repositories.UserRepository;
 import com.WoodStore.services.OrderService;
 import com.WoodStore.services.ProductService;
+import jakarta.transaction.Transactional;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class Runner implements ApplicationRunner {
@@ -42,6 +40,7 @@ public class Runner implements ApplicationRunner {
 
     }
 
+    @Transactional
     public void addEntities() {
         Random random = new Random();
 
@@ -91,20 +90,44 @@ public class Runner implements ApplicationRunner {
             int imageCount = 1 + random.nextInt(3);
 
             for (int j = 0; j < imageCount; j++) {
-                this.productService.addImage(product.getId(), "http://example.com/images/additional" + random.nextInt(1000) + ".jpg");
+                String imageUrl = "http://example.com/images/additional" + random.nextInt(1000) + ".jpg";
+                product.addAdditionalImage(imageUrl);
             }
+            productService.updateProduct(product);
 
         }
 
+        this.userRepository.save(new UserEntity("admin", passwordEncoder.encode("admin"), new HashSet<>(Collections.singleton(new Role("ADMIN")))));
+        this.roleRepository.save(new Role("EMPLOYEE"));
         this.roleRepository.save(new Role("USER"));
-        this.roleRepository.save(new Role("ADMIN"));
+//        createRoleIfNotFound("ADMIN");
+//        createRoleIfNotFound("USER");
+//
+//        addDefaultAdminUser();
+    }
+
+    @Transactional
+    public void addDefaultAdminUser() {
+
         String username = "admin";
         String password = passwordEncoder.encode("admin");
+        Role userRole = this.roleRepository.findByName("USER").get();
+        Role adminRole = this.roleRepository.findByName("ADMIN").get();
 
-        this.userRepository.save(new UserEntity(username, password, Collections.singletonList(new Role("ADMIN"))));
-
+        UserEntity user = new UserEntity(username, password, new HashSet<>());
+        user.getRoles().add(adminRole);
+        user.getRoles().add(userRole);
+        this.userRepository.save(user);
+        this.roleRepository.save(adminRole);
+        this.roleRepository.save(userRole);
     }
 
 
+
+    @Transactional
+    Role createRoleIfNotFound(String roleName) {
+        Optional<Role> roleOptional = roleRepository.findByName(roleName);
+        return roleOptional.orElseGet(() -> roleRepository.save(new Role(roleName)));
+    }
 
 }

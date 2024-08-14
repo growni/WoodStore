@@ -22,10 +22,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
-    public Product addProduct(@RequestBody Product product) {
-        return this.productService.addProduct(product);
-    }
 
     @GetMapping
     public List<Product> getAllProducts() {
@@ -37,10 +33,6 @@ public class ProductController {
         return this.productService.getProductById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteProductById(@PathVariable Long id) {
-        this.productService.deleteProductById(id);
-    }
 
     @GetMapping("/filter/name")
     public List<Product> filterProductsByName(@RequestParam String name) {

@@ -16,7 +16,9 @@ import org.mockito.MockitoAnnotations;
 import javax.xml.validation.Validator;
 import java.util.*;
 
+import static com.WoodStore.constants.Constants.PRODUCT_DESCRIPTION_MAX_LENGTH;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -266,38 +268,7 @@ public class ProductTests {
         verify(productRepository, times(1)).findAvailableProducts();
     }
 
-    @Test
-    public void testUpdateAvailableQuantity() {
-        Long productId = 1L;
-        int newQuantity = 10;
-        Product product = new Product();
-        product.setId(productId);
-        product.setQuantity(5); // Initial quantity
 
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(productRepository.save(product)).thenReturn(product);
-
-        productService.updateAvailableQuantity(productId, newQuantity);
-
-        assertEquals(newQuantity, product.getQuantity());
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, times(1)).save(product);
-    }
-
-    @Test
-    public void testUpdateAvailableQuantityProductNotFound() {
-        Long productId = 1L;
-        int newQuantity = 10;
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> {
-            productService.updateAvailableQuantity(productId, newQuantity);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
-    }
 
     @Test
     public void testSortByPriceAsc() {
@@ -414,335 +385,479 @@ public class ProductTests {
     }
 
     @Test
-    public void testAddEmail() {
-        Long productId = 1L;
-        String email = "test@example.com";
+    void testValidateName_ValidName_ShouldNotThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        product.setEmails(new HashSet<>());
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(productRepository.save(product)).thenReturn(product);
-
-        productService.addEmail(productId, email);
-
-        assertTrue(product.getEmails().contains(email));
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, times(1)).save(product);
+        product.setName("Valid Product Name");
+        assertDoesNotThrow(product::validate);
     }
 
     @Test
-    public void testAddEmailInvalidEmail() {
-        Long productId = 1L;
-        String invalidEmail = "invalid-email";
-
+    void testValidateName_InvalidName_ShouldThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        assertThrows(EmailError.class, () -> {
-            productService.addEmail(productId, invalidEmail);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
+        product.setName("A");
+        assertThrows(ProductPropertyError.class, product::validate);
     }
 
     @Test
-    public void testAddEmailProductNotFound() {
-        Long productId = 1L;
-        String email = "test@example.com";
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> {
-            productService.addEmail(productId, email);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
-    }
-
-    @Test
-    public void testRemoveEmail() {
-        Long productId = 1L;
-        String email = "test@example.com";
-        Set<String> emails = new HashSet<>(Arrays.asList(email));
+    void testValidateDescription_ValidDescription_ShouldNotThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        product.setEmails(emails);
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(productRepository.save(product)).thenReturn(product);
-
-        productService.removeEmail(productId, email);
-
-        assertFalse(product.getEmails().contains(email));
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, times(1)).save(product);
+        product.setDescription("This is a valid description.");
+        assertDoesNotThrow(product::validate);
     }
 
     @Test
-    public void testRemoveEmailNotSubscribed() {
-        Long productId = 1L;
-        String email = "test@example.com";
-        Set<String> emails = new HashSet<>();
+    void testValidateDescription_TooLongDescription_ShouldThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        product.setEmails(emails);
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        Exception exception = assertThrows(EmailError.class, () -> {
-            productService.removeEmail(productId, email);
-        });
-
-        String expectedMessage = "The email is not subscribed for this product.";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(product);
+        String longDescription = "A".repeat(PRODUCT_DESCRIPTION_MAX_LENGTH + 1);
+        product.setDescription(longDescription);
+        assertThrows(ProductPropertyError.class, product::validate);
     }
 
     @Test
-    public void testRemoveEmailInvalidEmail() {
-        Long productId = 1L;
-        String invalidEmail = "invalid-email";
-
+    void testValidatePrice_ValidPrice_ShouldNotThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        assertThrows(EmailError.class, () -> {
-            productService.removeEmail(productId, invalidEmail);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
+        product.setPrice(500.0);
+        assertDoesNotThrow(product::validate);
     }
 
     @Test
-    public void testRemoveEmailProductNotFound() {
-        Long productId = 1L;
-        String email = "test@example.com";
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> {
-            productService.removeEmail(productId, email);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
-    }
-
-    @Test
-    public void testUpdateWidth() {
-        Long productId = 1L;
-        Integer newWidth = 150;
+    void testValidatePrice_InvalidPrice_ShouldThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        product.setWidth(100); // Initial width
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(productRepository.save(product)).thenReturn(product);
-
-        productService.updateWidth(productId, newWidth);
-
-        assertEquals(newWidth, product.getWidth());
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, times(1)).save(product);
+        product.setPrice(-100.0);
+        assertThrows(ProductPropertyError.class, product::validate);
     }
 
     @Test
-    public void testUpdateWidthInvalidWidth() {
-        Long productId = 1L;
-        Integer invalidWidth = -5;
-
+    void testValidateWidth_ValidWidth_ShouldNotThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        assertThrows(ProductPropertyError.class, () -> {
-            productService.updateWeight(productId, invalidWidth);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
+        product.setWidth(100);
+        assertDoesNotThrow(product::validate);
     }
 
     @Test
-    public void testUpdateWidthProductNotFound() {
-        Long productId = 1L;
-        Integer newWidth = 150;
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> {
-            productService.updateWidth(productId, newWidth);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
-    }
-
-    @Test
-    public void testUpdateHeight() {
-        Long productId = 1L;
-        Integer newHeight = 200;
+    void testValidateWidth_InvalidWidth_ShouldThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        product.setHeight(100); // Initial height
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(productRepository.save(product)).thenReturn(product);
-
-        productService.updateHeight(productId, newHeight);
-
-        assertEquals(newHeight, product.getHeight());
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, times(1)).save(product);
+        product.setWidth(-10);
+        assertThrows(ProductPropertyError.class, product::validate);
     }
 
     @Test
-    public void testUpdateHeightInvalidHeight() {
-        Long productId = 1L;
-        Integer invalidHeight= -5;
-
+    void testValidateHeight_ValidHeight_ShouldNotThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        assertThrows(ProductPropertyError.class, () -> {
-            productService.updateWeight(productId, invalidHeight);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
+        product.setHeight(100);
+        assertDoesNotThrow(product::validate);
     }
 
     @Test
-    public void testUpdateHeightProductNotFound() {
-        Long productId = 1L;
-        Integer newHeight = 200;
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> {
-            productService.updateHeight(productId, newHeight);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
-    }
-
-    @Test
-    public void testUpdateWeight() {
-        Long productId = 1L;
-        Integer newWeight = 50;
+    void testValidateHeight_InvalidHeight_ShouldThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        product.setWeight(20); // Initial weight
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(productRepository.save(product)).thenReturn(product);
-
-        productService.updateWeight(productId, newWeight);
-
-        assertEquals(newWeight, product.getWeight());
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, times(1)).save(product);
+        product.setHeight(-10);
+        assertThrows(ProductPropertyError.class, product::validate);
     }
 
     @Test
-    public void testUpdateWeightInvalidWeight() {
-        Long productId = 1L;
-        Integer invalidWeight = -5;
-
+    void testValidateWeight_ValidWeight_ShouldNotThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        assertThrows(ProductPropertyError.class, () -> {
-            productService.updateWeight(productId, invalidWeight);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
+        product.setWeight(50);
+        assertDoesNotThrow(product::validate);
     }
 
     @Test
-    public void testUpdateWeightProductNotFound() {
-        Long productId = 1L;
-        Integer newWeight = 50;
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> {
-            productService.updateWeight(productId, newWeight);
-        });
-
-        verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, never()).save(any(Product.class));
-    }
-
-    @Test
-    public void testAddImage() {
-        Long productId = 1L;
-        String imgUrl = "http://example.com/image.jpg";
+    void testValidateWeight_InvalidWeight_ShouldThrowException() {
         Product product = new Product();
-        product.setId(productId);
-        product.setAdditionalImgUrls(new HashSet<>());
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        productService.addImage(productId, imgUrl);
-
-        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
-        verify(productRepository, times(1)).save(productArgumentCaptor.capture());
-        Product savedProduct = productArgumentCaptor.getValue();
-
-        assertTrue(savedProduct.getAdditionalImgUrls().contains(imgUrl));
+        product.setWeight(-1);
+        assertThrows(ProductPropertyError.class, product::validate);
     }
 
     @Test
-    public void testUpdateImgUrl() {
-        Long productId = 1L;
-        String imgUrl = "http://example.com/newimage.jpg";
+    void testValidateQuantity_ValidQuantity_ShouldNotThrowException() {
         Product product = new Product();
-        product.setId(productId);
-
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        productService.updateImgUrl(productId, imgUrl);
-
-        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
-        verify(productRepository, times(1)).save(productArgumentCaptor.capture());
-        Product savedProduct = productArgumentCaptor.getValue();
-
-        assertEquals(imgUrl, savedProduct.getImageUrl());
+        product.setQuantity(10);
+        assertDoesNotThrow(product::validate);
     }
 
     @Test
-    public void testAddImage_ProductNotFound() {
-        Long productId = 1L;
-        String imgUrl = "http://example.com/image.jpg";
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> productService.addImage(productId, imgUrl));
+    void testValidateQuantity_InvalidQuantity_ShouldThrowException() {
+        Product product = new Product();
+        product.setQuantity(-1);
+        assertThrows(ProductPropertyError.class, product::validate);
     }
 
     @Test
-    public void testUpdateImgUrl_ProductNotFound() {
-        Long productId = 1L;
-        String imgUrl = "http://example.com/newimage.jpg";
-
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-
-        assertThrows(ProductNotFound.class, () -> productService.updateImgUrl(productId, imgUrl));
+    void testValidateImageUrl_ValidUrl_ShouldNotThrowException() {
+        Product product = new Product();
+        product.setImageUrl("http://example.com/image.jpg");
+        assertDoesNotThrow(product::validate);
     }
 
+    @Test
+    void testValidateImageUrl_InvalidUrl_ShouldThrowException() {
+        Product product = new Product();
+        product.setImageUrl("invalid-url");
+        assertThrows(ProductPropertyError.class, product::validate);
+    }
 
+//    @Test
+//    public void testAddEmail() {
+//        Long productId = 1L;
+//        String email = "test@example.com";
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setEmails(new HashSet<>());
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//        when(productRepository.save(product)).thenReturn(product);
+//
+//        productService.addEmail(productId, email);
+//
+//        assertTrue(product.getEmails().contains(email));
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, times(1)).save(product);
+//    }
+//
+//    @Test
+//    public void testAddEmailInvalidEmail() {
+//        Long productId = 1L;
+//        String invalidEmail = "invalid-email";
+//
+//        Product product = new Product();
+//        product.setId(productId);
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        assertThrows(EmailError.class, () -> {
+//            productService.addEmail(productId, invalidEmail);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testAddEmailProductNotFound() {
+//        Long productId = 1L;
+//        String email = "test@example.com";
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> {
+//            productService.addEmail(productId, email);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testRemoveEmail() {
+//        Long productId = 1L;
+//        String email = "test@example.com";
+//        Set<String> emails = new HashSet<>(Arrays.asList(email));
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setEmails(emails);
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//        when(productRepository.save(product)).thenReturn(product);
+//
+//        productService.removeEmail(productId, email);
+//
+//        assertFalse(product.getEmails().contains(email));
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, times(1)).save(product);
+//    }
+//
+//    @Test
+//    public void testRemoveEmailNotSubscribed() {
+//        Long productId = 1L;
+//        String email = "test@example.com";
+//        Set<String> emails = new HashSet<>();
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setEmails(emails);
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        Exception exception = assertThrows(EmailError.class, () -> {
+//            productService.removeEmail(productId, email);
+//        });
+//
+//        String expectedMessage = "The email is not subscribed for this product.";
+//        String actualMessage = exception.getMessage();
+//
+//        assertTrue(actualMessage.contains(expectedMessage));
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(product);
+//    }
+//
+//    @Test
+//    public void testRemoveEmailInvalidEmail() {
+//        Long productId = 1L;
+//        String invalidEmail = "invalid-email";
+//
+//        Product product = new Product();
+//        product.setId(productId);
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        assertThrows(EmailError.class, () -> {
+//            productService.removeEmail(productId, invalidEmail);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testRemoveEmailProductNotFound() {
+//        Long productId = 1L;
+//        String email = "test@example.com";
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> {
+//            productService.removeEmail(productId, email);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testUpdateWidth() {
+//        Long productId = 1L;
+//        Integer newWidth = 150;
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setWidth(100); // Initial width
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//        when(productRepository.save(product)).thenReturn(product);
+//
+//        productService.updateWidth(productId, newWidth);
+//
+//        assertEquals(newWidth, product.getWidth());
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, times(1)).save(product);
+//    }
+//
+//    @Test
+//    public void testUpdateWidthInvalidWidth() {
+//        Long productId = 1L;
+//        Integer invalidWidth = -5;
+//
+//        Product product = new Product();
+//        product.setId(productId);
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        assertThrows(ProductPropertyError.class, () -> {
+//            productService.updateWeight(productId, invalidWidth);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testUpdateWidthProductNotFound() {
+//        Long productId = 1L;
+//        Integer newWidth = 150;
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> {
+//            productService.updateWidth(productId, newWidth);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testUpdateHeight() {
+//        Long productId = 1L;
+//        Integer newHeight = 200;
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setHeight(100); // Initial height
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//        when(productRepository.save(product)).thenReturn(product);
+//
+//        productService.updateHeight(productId, newHeight);
+//
+//        assertEquals(newHeight, product.getHeight());
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, times(1)).save(product);
+//    }
+//
+//    @Test
+//    public void testUpdateHeightInvalidHeight() {
+//        Long productId = 1L;
+//        Integer invalidHeight= -5;
+//
+//        Product product = new Product();
+//        product.setId(productId);
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        assertThrows(ProductPropertyError.class, () -> {
+//            productService.updateWeight(productId, invalidHeight);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testUpdateHeightProductNotFound() {
+//        Long productId = 1L;
+//        Integer newHeight = 200;
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> {
+//            productService.updateHeight(productId, newHeight);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testUpdateWeight() {
+//        Long productId = 1L;
+//        Integer newWeight = 50;
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setWeight(20); // Initial weight
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//        when(productRepository.save(product)).thenReturn(product);
+//
+//        productService.updateWeight(productId, newWeight);
+//
+//        assertEquals(newWeight, product.getWeight());
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, times(1)).save(product);
+//    }
+//
+//    @Test
+//    public void testUpdateWeightInvalidWeight() {
+//        Long productId = 1L;
+//        Integer invalidWeight = -5;
+//
+//        Product product = new Product();
+//        product.setId(productId);
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        assertThrows(ProductPropertyError.class, () -> {
+//            productService.updateWeight(productId, invalidWeight);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testUpdateWeightProductNotFound() {
+//        Long productId = 1L;
+//        Integer newWeight = 50;
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> {
+//            productService.updateWeight(productId, newWeight);
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
+//
+//    @Test
+//    public void testAddImage() {
+//        Long productId = 1L;
+//        String imgUrl = "http://example.com/image.jpg";
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setAdditionalImgUrls(new HashSet<>());
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        productService.addImage(productId, imgUrl);
+//
+//        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+//        verify(productRepository, times(1)).save(productArgumentCaptor.capture());
+//        Product savedProduct = productArgumentCaptor.getValue();
+//
+//        assertTrue(savedProduct.getAdditionalImgUrls().contains(imgUrl));
+//    }
+//
+//    @Test
+//    public void testUpdateImgUrl() {
+//        Long productId = 1L;
+//        String imgUrl = "http://example.com/newimage.jpg";
+//        Product product = new Product();
+//        product.setId(productId);
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//
+//        productService.updateImgUrl(productId, imgUrl);
+//
+//        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+//        verify(productRepository, times(1)).save(productArgumentCaptor.capture());
+//        Product savedProduct = productArgumentCaptor.getValue();
+//
+//        assertEquals(imgUrl, savedProduct.getImageUrl());
+//    }
+//
+//    @Test
+//    public void testAddImage_ProductNotFound() {
+//        Long productId = 1L;
+//        String imgUrl = "http://example.com/image.jpg";
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> productService.addImage(productId, imgUrl));
+//    }
+//
+//    @Test
+//    public void testUpdateImgUrl_ProductNotFound() {
+//        Long productId = 1L;
+//        String imgUrl = "http://example.com/newimage.jpg";
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> productService.updateImgUrl(productId, imgUrl));
+//    }
+
+//    @Test
+//    public void testUpdateAvailableQuantity() {
+//        Long productId = 1L;
+//        int newQuantity = 10;
+//        Product product = new Product();
+//        product.setId(productId);
+//        product.setQuantity(5); // Initial quantity
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+//        when(productRepository.save(product)).thenReturn(product);
+//
+//        productService.updateProduct(product);
+//
+//        assertEquals(newQuantity, product.getQuantity());
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, times(1)).save(product);
+//    }
+//
+//    @Test
+//    public void testUpdateAvailableQuantityProductNotFound() {
+//        Long productId = 1L;
+//        int newQuantity = 10;
+//
+//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+//
+//        assertThrows(ProductNotFound.class, () -> {
+//            productService.updateProduct();
+//        });
+//
+//        verify(productRepository, times(1)).findById(productId);
+//        verify(productRepository, never()).save(any(Product.class));
+//    }
 }
