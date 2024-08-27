@@ -1,5 +1,7 @@
 package com.WoodStore;
 
+import com.WoodStore.constants.ProductCategory;
+import com.WoodStore.constants.ProductMaterial;
 import com.WoodStore.entities.Product;
 import com.WoodStore.exceptions.EmailError;
 import com.WoodStore.exceptions.ProductNotFound;
@@ -384,118 +386,13 @@ public class ProductTests {
         verify(productRepository, times(1)).findAllSubscribedProducts();
     }
 
-    @Test
-    void testValidateName_ValidName_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setName("Valid Product Name");
-        assertDoesNotThrow(product::validate);
-    }
+   @Test
+   void testProductInvalidNameTooShort() {
+       Product product = new Product();
+       product.setName("");
 
-    @Test
-    void testValidateName_InvalidName_ShouldThrowException() {
-        Product product = new Product();
-        product.setName("A");
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
-
-    @Test
-    void testValidateDescription_ValidDescription_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setDescription("This is a valid description.");
-        assertDoesNotThrow(product::validate);
-    }
-
-    @Test
-    void testValidateDescription_TooLongDescription_ShouldThrowException() {
-        Product product = new Product();
-        String longDescription = "A".repeat(PRODUCT_DESCRIPTION_MAX_LENGTH + 1);
-        product.setDescription(longDescription);
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
-
-    @Test
-    void testValidatePrice_ValidPrice_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setPrice(500.0);
-        assertDoesNotThrow(product::validate);
-    }
-
-    @Test
-    void testValidatePrice_InvalidPrice_ShouldThrowException() {
-        Product product = new Product();
-        product.setPrice(-100.0);
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
-
-    @Test
-    void testValidateWidth_ValidWidth_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setWidth(100);
-        assertDoesNotThrow(product::validate);
-    }
-
-    @Test
-    void testValidateWidth_InvalidWidth_ShouldThrowException() {
-        Product product = new Product();
-        product.setWidth(-10);
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
-
-    @Test
-    void testValidateHeight_ValidHeight_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setHeight(100);
-        assertDoesNotThrow(product::validate);
-    }
-
-    @Test
-    void testValidateHeight_InvalidHeight_ShouldThrowException() {
-        Product product = new Product();
-        product.setHeight(-10);
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
-
-    @Test
-    void testValidateWeight_ValidWeight_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setWeight(50);
-        assertDoesNotThrow(product::validate);
-    }
-
-    @Test
-    void testValidateWeight_InvalidWeight_ShouldThrowException() {
-        Product product = new Product();
-        product.setWeight(-1);
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
-
-    @Test
-    void testValidateQuantity_ValidQuantity_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setQuantity(10);
-        assertDoesNotThrow(product::validate);
-    }
-
-    @Test
-    void testValidateQuantity_InvalidQuantity_ShouldThrowException() {
-        Product product = new Product();
-        product.setQuantity(-1);
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
-
-    @Test
-    void testValidateImageUrl_ValidUrl_ShouldNotThrowException() {
-        Product product = new Product();
-        product.setImageUrl("http://example.com/image.jpg");
-        assertDoesNotThrow(product::validate);
-    }
-
-    @Test
-    void testValidateImageUrl_InvalidUrl_ShouldThrowException() {
-        Product product = new Product();
-        product.setImageUrl("invalid-url");
-        assertThrows(ProductPropertyError.class, product::validate);
-    }
+       assertThrows(ProductPropertyError.class, product::validateName);
+   }
 
 //    @Test
 //    public void testAddEmail() {

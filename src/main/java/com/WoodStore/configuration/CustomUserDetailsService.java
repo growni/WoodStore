@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.WoodStore.messages.Errors.USERNAME_NOT_FOUND_ERROR;
+import static com.WoodStore.messages.errors.UserErrors.USERNAME_NOT_FOUND_ERROR;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

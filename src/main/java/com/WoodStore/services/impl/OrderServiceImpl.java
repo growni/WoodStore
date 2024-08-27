@@ -13,10 +13,10 @@ import com.WoodStore.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.WoodStore.messages.Errors.BASKET_NOT_FOUND;
-import static com.WoodStore.messages.Errors.ORDER_NOT_FOUND_ERROR;
 import static com.WoodStore.messages.email.Body.ORDER_CONFIRMATION_BODY;
 import static com.WoodStore.messages.email.Subject.ORDER_CONFIRMATION_SUBJECT;
+import static com.WoodStore.messages.errors.OrderErrors.BASKET_NOT_FOUND;
+import static com.WoodStore.messages.errors.OrderErrors.ORDER_NOT_FOUND_ERROR;
 
 @Service
 public class OrderServiceImpl implements OrderService {

@@ -22,14 +22,19 @@ public class Basket {
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<BasketItem> items = new HashSet<>();
 
+
     public void addItem(Product product, int quantity) {
+        boolean itemExists = false;
         for (BasketItem item : items) {
             if (item.getProduct().equals(product)) {
                 item.setQuantity(item.getQuantity() + quantity);
-                return;
+                itemExists = true;
+                break;
             }
         }
-        items.add(new BasketItem(this, product, quantity));
+        if (!itemExists) {
+            items.add(new BasketItem(this, product, quantity));
+        }
         setTotalPrice();
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.WoodStore.messages.Errors.*;
+import static com.WoodStore.messages.errors.ProductErrors.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {

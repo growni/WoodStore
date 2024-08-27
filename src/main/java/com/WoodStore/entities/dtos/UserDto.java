@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import static com.WoodStore.constants.Constants.*;
-import static com.WoodStore.messages.Errors.*;
-import static com.WoodStore.messages.Errors.USERNAME_INVALID_CHARACTERS_ERROR;
+import static com.WoodStore.messages.errors.UserErrors.*;
 
 @Getter
 @Setter

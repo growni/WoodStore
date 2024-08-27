@@ -3,6 +3,8 @@ package com.WoodStore.services.impl;
 import com.WoodStore.entities.Basket;
 import com.WoodStore.entities.BasketItem;
 import com.WoodStore.entities.Product;
+import com.WoodStore.entities.dtos.BasketDto;
+import com.WoodStore.entities.dtos.BasketItemDto;
 import com.WoodStore.exceptions.BasketError;
 import com.WoodStore.exceptions.ProductNotFound;
 import com.WoodStore.exceptions.ProductPropertyError;
@@ -14,7 +16,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.WoodStore.messages.Errors.*;
+import static com.WoodStore.messages.errors.OrderErrors.BASKET_NOT_FOUND;
+import static com.WoodStore.messages.errors.ProductErrors.*;
 
 @Service
 @Transactional
@@ -32,8 +35,13 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public Basket createBasket() {
+    public Basket createBasket(BasketDto basketDto) {
         Basket basket = new Basket();
+        for (BasketItemDto basketItemDto : basketDto.getItems()) {
+            Product product = productRepository.findById(basketItemDto.getProductId()).orElseThrow(() ->
+                    new ProductNotFound(String.format(PRODUCT_NOT_FOUND_ERROR, basketItemDto.getProductId())));
+            basket.addItem(product, basketItemDto.getQuantity());
+        }
         return this.basketRepository.save(basket);
     }
 

@@ -10,12 +10,13 @@ import lombok.Getter;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.WoodStore.constants.Constants.*;
-import static com.WoodStore.messages.Errors.*;
-import static com.WoodStore.messages.Errors.INVALID_IMAGE_URL;
+import static com.WoodStore.messages.errors.ProductErrors.*;
+import static com.WoodStore.messages.errors.OrderErrors.*;
 
 @Getter
 @Entity
@@ -66,7 +67,6 @@ public class Product {
         this.category = category;
         this.additionalImgUrls = additionalImgUrls;
         this.emails = emails;
-        validate();
     }
 
     @PrePersist
@@ -92,13 +92,13 @@ public class Product {
     }
 
     public void validate() {
-        validateName(getName());
-        validateDescription(getDescription());
-        validatePrice(getPrice());
-        validateWidth(getWidth());
-        validateHeight(getHeight());
-        validateWeight(getWeight());
-        validateQuantity(getQuantity());
+        validateName();
+        validateDescription();
+        validatePrice();
+        validateWidth();
+        validateHeight();
+        validateWeight();
+        validateQuantity();
     }
 
     public void setId(Long id) {
@@ -106,51 +106,51 @@ public class Product {
     }
 
     public void setDescription(String description) {
-        validateDescription(description);
-
         this.description = description;
+
+        validateDescription();
     }
 
     public void setName(String name) {
-        validateName(name);
-
         this.name = name;
+
+        validateName();
     }
 
     public void setPrice(Double price) {
-        validatePrice(price);
-
         this.price = price;
+
+        validatePrice();
     }
 
     public void setWidth(Integer width) {
-        validateWidth(width);
-
         this.width = width;
+
+        validateWidth();
     }
 
     public void setHeight(Integer height) {
-        validateHeight(height);
-
         this.height = height;
+
+        validateHeight();
     }
 
     public void setWeight(Integer weight) {
-        validateWeight(weight);
-
         this.weight = weight;
+
+        validateWeight();
     }
 
     public void setQuantity(Integer quantity) {
-        validateQuantity(quantity);
-
         this.quantity = quantity;
+
+        validateQuantity();
     }
 
     public void setImageUrl(String imageUrl) {
-        validateImageUrl(imageUrl);
-
         this.imageUrl = imageUrl;
+
+        validateImageUrl(imageUrl);
     }
 
     public void setMaterial(ProductMaterial material) {
@@ -162,33 +162,34 @@ public class Product {
     }
 
     public void addAdditionalImage(String imageUrl) {
-        validateImageUrl(imageUrl);
         this.additionalImgUrls.add(imageUrl);
+
+        validateImageUrl(imageUrl);
     }
 
     public void setAdditionalImgUrls(Set<String> additionalImgUrls) {
+        this.additionalImgUrls = additionalImgUrls;
+
         for (String url : additionalImgUrls) {
             validateImageUrl(url);
         }
-
-        this.additionalImgUrls = additionalImgUrls;
     }
 
     public void addEmail(String email) {
-        validateEmail(email);
-
         this.emails.add(email);
+
+        validateEmail(email);
     }
 
     public void setEmails(Set<String> emails) {
+        this.emails = emails;
+
         for (String email : emails) {
             validateEmail(email);
         }
-
-        this.emails = emails;
     }
 
-    private void validateEmail(String email) {
+    public void validateEmail(String email) {
         String emailRegexPattern = "^(.+)@(\\S+)$";
         boolean isValidEmail = Pattern.compile(emailRegexPattern).matcher(email).matches();
 
@@ -198,55 +199,69 @@ public class Product {
 
     }
 
-    private void validateName(String name) {
+    public void validateName() {
         if(name == null || name.trim().length() < PRODUCT_NAME_MIN_LENGTH || name.trim().length() > PRODUCT_NAME_MAX_LENGTH) {
             throw new ProductPropertyError(PRODUCT_NAME_LENGTH_ERROR);
         }
     }
 
-    private void validateDescription(String description) {
+    public void validateDescription() {
         if(description.trim().length() > PRODUCT_DESCRIPTION_MAX_LENGTH) {
             throw new ProductPropertyError(PRODUCT_DESCRIPTION_LENGTH_ERROR);
         }
     }
 
-    private void validatePrice(Double price) {
+    public void validatePrice() {
         if(price == null || price.isNaN() || price < PRODUCT_PRICE_MIN || price > PRODUCT_PRICE_MAX) {
             throw new ProductPropertyError(PRODUCT_PRICE_ERROR);
         }
     }
 
-    private void validateWidth(Integer width) {
+    public void validateWidth() {
         if(width < PRODUCT_WIDTH_MIN || width > PRODUCT_WIDTH_MAX) {
             throw new ProductPropertyError(PRODUCT_WIDTH_ERROR);
         }
     }
 
-    private void validateHeight(Integer height) {
+    public void validateHeight() {
         if(height < PRODUCT_HEIGHT_MIN || height > PRODUCT_HEIGHT_MAX) {
             throw new ProductPropertyError(PRODUCT_HEIGHT_ERROR);
         }
     }
 
-    private void validateWeight(Integer weight) {
+    public void validateWeight() {
         if(weight < PRODUCT_WEIGHT_MIN || weight > PRODUCT_WEIGHT_MAX) {
             throw new ProductPropertyError(PRODUCT_WEIGHT_ERROR);
         }
     }
 
-    private void validateQuantity(Integer quantity) {
+    public void validateQuantity() {
         if(quantity == null || quantity < PRODUCT_QUANTITY_MIN || quantity > PRODUCT_QUANTITY_MAX) {
             throw new ProductPropertyError(PRODUCT_QUANTITY_ERROR);
         }
     }
 
-    private void validateImageUrl(String url) {
+    public void validateImageUrl(String url) {
         String emailRegexPattern = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
         boolean isValidUrl = Pattern.compile(emailRegexPattern).matcher(url).matches();
 
         if(!isValidUrl) {
             throw new ProductPropertyError(INVALID_IMAGE_URL);
         }
+    }
+
+    //Used to properly compare different instances of the Product class
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }

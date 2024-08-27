@@ -9,7 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-import static com.WoodStore.messages.Errors.*;
+import static com.WoodStore.messages.errors.OrderErrors.*;
 
 @Getter
 @Setter

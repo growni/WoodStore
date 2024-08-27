@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import static com.WoodStore.messages.Errors.*;
-import static com.WoodStore.messages.Errors.INVALID_ORDER_RECIPIENT_PHONE;
+import static com.WoodStore.messages.errors.OrderErrors.*;
 
 
 @Getter

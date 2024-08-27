@@ -1,6 +1,7 @@
 package com.WoodStore.controllers;
 
 import com.WoodStore.entities.Basket;
+import com.WoodStore.entities.dtos.BasketDto;
 import com.WoodStore.services.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class BasketController {
     }
 
     @PostMapping
-    public Basket createBasket() {
-        return this.basketService.createBasket();
+    public Basket createBasket(@RequestBody BasketDto basketDto) {
+        return this.basketService.createBasket(basketDto);
     }
 
     @GetMapping("/{basketId}")
@@ -26,24 +27,24 @@ public class BasketController {
         return this.basketService.getBasket(basketId);
     }
 
-    @PutMapping("/{basketId}/products/{productId}")
-    public void addProduct(@PathVariable Long basketId, @PathVariable Long productId) {
-        this.basketService.addProduct(basketId, productId);
-    }
-
-    @PatchMapping("/{basketId}/products/{productId}")
-    public void adjustQuantity(@PathVariable Long basketId, @PathVariable Long productId, @RequestParam boolean increment) {
-        if(increment) {
-            this.basketService.increaseQuantity(basketId, productId);
-        } else {
-            this.basketService.decreaseQuantity(basketId, productId);
-        }
-    }
-
-    @DeleteMapping("/{basketId}/products/{productId}")
-    public void removeProduct(@PathVariable Long basketId, @PathVariable Long productId) {
-        this.basketService.removeProduct(basketId, productId);
-    }
+//    @PutMapping("/{basketId}/products/{productId}")
+//    public void addProduct(@PathVariable Long basketId, @PathVariable Long productId) {
+//        this.basketService.addProduct(basketId, productId);
+//    }
+//
+//    @PatchMapping("/{basketId}/products/{productId}")
+//    public void adjustQuantity(@PathVariable Long basketId, @PathVariable Long productId, @RequestParam boolean increment) {
+//        if(increment) {
+//            this.basketService.increaseQuantity(basketId, productId);
+//        } else {
+//            this.basketService.decreaseQuantity(basketId, productId);
+//        }
+//    }
+//
+//    @DeleteMapping("/{basketId}/products/{productId}")
+//    public void removeProduct(@PathVariable Long basketId, @PathVariable Long productId) {
+//        this.basketService.removeProduct(basketId, productId);
+//    }
 
     @DeleteMapping("/{basketId}/clear")
     public void clearBasket(@PathVariable Long basketId) {
